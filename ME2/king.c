@@ -91,6 +91,15 @@ int killProcess(char myfifo[]) {
 	return 1;
 }
 
+void killWinningProcess(char myfifo[]) {
+	pid_t childPIDInt;
+	char *pointer;
+
+	close(fileDescriptor);
+	childPIDInt = strtol(childPID, &pointer, 10);
+	kill(childPIDInt, SIGINT);
+}
+
 int checkNumberOfTriesLeft(char myfifo[]) {
 	int breakFlag = 0; 
 	if(!temp) { resetGuesses(); breakFlag = killProcess(myfifo); } 
@@ -111,9 +120,18 @@ void listenForContestants(char myfifo[], char secretCode[]) {
 	// King = Read-Only
 	while(!breakFlag) {
 		read(fileDescriptor, contestantGuess, 8);
-		strncmp(secretCode, contestantGuess, 2) == 0 ? 
-			printf("%s answers %s correctly!\n", childPID, contestantGuess), initializeSecretCode(), resetGuesses(), temp++ : 
-				printf("%s answers %s incorrectly! [%d guesses left.]\n", childPID, contestantGuess, temp-1), temp--;
+		if(strncmp(secretCode, contestantGuess, 2) == 0) { 
+			printf("%s answers %s correctly!\n", childPID, contestantGuess);
+		    initializeSecretCode(); 
+		    resetGuesses(); 
+		    killWinningProcess(myfifo);
+		    breakFlag = 1;
+		    temp++; 
+		    break;
+		} 
+		else
+			printf("%s answers %s incorrectly! [%d guesses left.]\n", childPID, contestantGuess, temp-1), temp--;
+		
 		breakFlag = checkNumberOfTriesLeft(myfifo);
 	}
 

@@ -92,8 +92,11 @@ void spawnContestants(char myfifo[]) {
 		signal(SIGINT, signalHandler);
 		printf("%d Please guess the code: ", childPID);
 		scanf("%s", &contestantGuess);
-		strncmp(secretCode, contestantGuess, 2) == 0 ? turnOnBreakFlag(numberOfTrials) : printf("");
 		write(fileDescriptor, contestantGuess, strlen(contestantGuess) + 1);
+		if(strncmp(secretCode, contestantGuess, 2) == 0) {
+			turnOnBreakFlag(numberOfTrials);
+			break;
+		}
 		numberOfTrials--;
 		switch(numberOfTrials) { case 0: breakFlag ? printf("") : turnOnBreakFlag(numberOfTrials); }
 	}
