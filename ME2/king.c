@@ -84,7 +84,7 @@ int killProcess(char myfifo[]) {
 
 	close(fileDescriptor);
 	childPIDInt = strtol(childPID, &pointer, 10);
-	kill(childPIDInt, SIGINT);
+	kill(childPIDInt, SIGTERM);
 	printf("%d has exceeded number of trials, process will terminated.\n", childPIDInt);
 	return 1;
 }
@@ -95,7 +95,7 @@ void killWinningProcess(char myfifo[]) {
 
 	close(fileDescriptor);
 	childPIDInt = strtol(childPID, &pointer, 10);
-	kill(childPIDInt, SIGINT);
+	kill(childPIDInt, SIGTERM);
 }
 
 int checkNumberOfTriesLeft(char myfifo[]) {
