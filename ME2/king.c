@@ -4,6 +4,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -11,6 +12,7 @@
 char secretCode[2];
 char childPID[20];
 int numberOfTrials, temp;
+int fileDescriptor;
 
 void createFIFO(char argv[]) {
 	char *myfifo = argv;
@@ -50,9 +52,9 @@ void initializeSecretCode() {
 
 void resetGuesses() { temp = numberOfTrials; }
 
-void obtainChildPID(int fileDescriptor) { read(fileDescriptor, childPID, 255); }
+void obtainChildPID() { read(fileDescriptor, childPID, 255); }
 
-void displayJoinPrompt(int fileDescriptor, char myfifo[]) {
+void displayJoinPrompt(char myfifo[]) {
 	char entryPrompt[225];
 	int breakFlag = 0;
 	while(!breakFlag) {
@@ -62,7 +64,7 @@ void displayJoinPrompt(int fileDescriptor, char myfifo[]) {
 	}
 }
 
-void sendNumberOfTrials(int fileDescriptor, char myfifo[]) {
+void sendNumberOfTrials(char myfifo[]) {
 	static char numberOfTrialsString[255];
 	fileDescriptor = open(myfifo, O_WRONLY);
 	snprintf(numberOfTrialsString, 10, "%d", numberOfTrials);
@@ -71,31 +73,43 @@ void sendNumberOfTrials(int fileDescriptor, char myfifo[]) {
 	// printf("Sent: %s\n", numberOfTrialsString);
 }
 
-void killProcess() {
-	
+int killProcess(char myfifo[]) {
+	long int childPIDInt;
+	char *pointer;
+
+	close(fileDescriptor);
+	childPIDInt = strtol(childPID, &pointer, 10);
+	kill(childPIDInt, SIGKILL);
+	printf("%d has been terminated.\n", childPIDInt);
+	// fileDescriptor = open(myfifo, O_RDONLY);
+	return 1;
+}
+
+int checkNumberOfTriesLeft(char myfifo[]) {
+	int breakFlag = 0; 
+	if(!temp) { resetGuesses(); breakFlag = killProcess(myfifo); } 
+	return breakFlag;
 }
 
 void listenForContestants(char myfifo[], char secretCode[]) {
-	int fileDescriptor;
 	char contestantGuess[8];
+	int breakFlag = 0;
 
-	sendNumberOfTrials(fileDescriptor, myfifo);
+	sendNumberOfTrials(myfifo);
 
 	fileDescriptor = open(myfifo, O_RDONLY);
 	resetGuesses();
-	obtainChildPID(fileDescriptor);
-	displayJoinPrompt(fileDescriptor, myfifo);
+	obtainChildPID();
+	displayJoinPrompt(myfifo);
 	temp--;
 
 	// King = Read-Only
-	while(1) {
+	while(!breakFlag) {
 		read(fileDescriptor, contestantGuess, 8);
 		strncmp(secretCode, contestantGuess, 2) == 0 ? 
 			printf("%s answers %s correctly!\n", childPID, contestantGuess), initializeSecretCode(), resetGuesses(), temp++ : 
 				printf("%s answers %s incorrectly! [%d guesses left.]\n", childPID, contestantGuess, temp), temp--;
-		temp > 0 ? 
-			printf("") :  
-				resetGuesses(), killProcess();
+		breakFlag = checkNumberOfTriesLeft(myfifo);
 	}
 }
 
@@ -103,6 +117,6 @@ int main(int argc, char **argv) {
 	char* myfifo = argv[1];
 	isPipeNameSpecified(argc, myfifo);
 	initializeSecretCode();
-	listenForContestants(myfifo, secretCode);
+	while(1) { listenForContestants(myfifo, secretCode); }
 	return 0;
 }

@@ -54,8 +54,9 @@ void getNumberOfTrials(int fileDescriptor, char myfifo[]) {
 	read(fileDescriptor, numberOfTrialsString, 255);
 	numberOfTrials = strtol(numberOfTrialsString, &pointer, 10);
 	close(fileDescriptor);
-	printf("%d number of trials obtained.\n", numberOfTrials);
+	// printf("%d number of trials obtained.\n", numberOfTrials);
 }
+
 void spawnContestants(char myfifo[]) {
 	int fileDescriptor;
 	char contestantGuess[8];
