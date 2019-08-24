@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <string.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
@@ -17,7 +17,7 @@ int fileDescriptor;
 void createFIFO(char argv[]) {
 	char *myfifo = argv;
 	mkfifo(myfifo, 0666);
-	printf("Pipe creation successful.\n");
+	// printf("Pipe creation successful.\n");
 }
 
 void isPipeNameSpecified(int argc, char argv[]) { 
@@ -74,12 +74,12 @@ void sendNumberOfTrials(char myfifo[]) {
 }
 
 int killProcess(char myfifo[]) {
-	long int childPIDInt;
+	pid_t childPIDInt;
 	char *pointer;
 
 	close(fileDescriptor);
 	childPIDInt = strtol(childPID, &pointer, 10);
-	kill(childPIDInt, SIGKILL);
+	kill(childPIDInt, SIGINT);
 	printf("%d has been terminated.\n", childPIDInt);
 	// fileDescriptor = open(myfifo, O_RDONLY);
 	return 1;
@@ -101,14 +101,13 @@ void listenForContestants(char myfifo[], char secretCode[]) {
 	resetGuesses();
 	obtainChildPID();
 	displayJoinPrompt(myfifo);
-	temp--;
 
 	// King = Read-Only
 	while(!breakFlag) {
 		read(fileDescriptor, contestantGuess, 8);
 		strncmp(secretCode, contestantGuess, 2) == 0 ? 
 			printf("%s answers %s correctly!\n", childPID, contestantGuess), initializeSecretCode(), resetGuesses(), temp++ : 
-				printf("%s answers %s incorrectly! [%d guesses left.]\n", childPID, contestantGuess, temp), temp--;
+				printf("%s answers %s incorrectly! [%d guesses left.]\n", childPID, contestantGuess, temp-1), temp--;
 		breakFlag = checkNumberOfTriesLeft(myfifo);
 	}
 }

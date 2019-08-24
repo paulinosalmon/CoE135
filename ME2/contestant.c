@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -45,7 +45,7 @@ void sendEntryMessage(int fileDescriptor) {
 	write(fileDescriptor, sendJoinPrompt(sendChildPID()), strlen(sendJoinPrompt(sendChildPID())) + 1);
 }
 
-void getNumberOfTrials(int fileDescriptor, char myfifo[]) {
+int getNumberOfTrials(int fileDescriptor, char myfifo[]) {
 	long int numberOfTrials;
 	char numberOfTrialsString[255];
 	char *pointer;
@@ -54,14 +54,16 @@ void getNumberOfTrials(int fileDescriptor, char myfifo[]) {
 	read(fileDescriptor, numberOfTrialsString, 255);
 	numberOfTrials = strtol(numberOfTrialsString, &pointer, 10);
 	close(fileDescriptor);
+	return numberOfTrials;
 	// printf("%d number of trials obtained.\n", numberOfTrials);
 }
 
 void spawnContestants(char myfifo[]) {
 	int fileDescriptor;
+	int numberOfTrials;
 	char contestantGuess[8];
 	initiateFork();
-	getNumberOfTrials(fileDescriptor, myfifo);
+	numberOfTrials = getNumberOfTrials(fileDescriptor, myfifo);
 
 	fileDescriptor = open(myfifo, O_WRONLY);
 	sendEntryMessage(fileDescriptor);
