@@ -11,6 +11,7 @@
 
 char secretCode[2];
 char childPID[20];
+char parentPID[20];
 int numberOfTrials, temp, repeatFlag = 0;
 int fileDescriptor;
 
@@ -51,7 +52,14 @@ void initializeSecretCode() {
 
 void resetGuesses() { temp = numberOfTrials; }
 
-void obtainChildPID() { read(fileDescriptor, childPID, 255); }
+void obtainParentPID() {
+	read(fileDescriptor, parentPID, 255); 
+}
+
+void obtainChildPID() { 
+	read(fileDescriptor, childPID, 255); 
+	!repeatFlag ? obtainParentPID() : printf("");
+}
 
 void displayJoinPrompt(char myfifo[]) {
 	char entryPrompt[225];
@@ -63,9 +71,12 @@ void displayJoinPrompt(char myfifo[]) {
 
 void sendNumberOfTrials(char myfifo[]) {
 	char numberOfTrialsString[255];
+	char secretCodeString[255];
 	fileDescriptor = open(myfifo, O_WRONLY);
 	snprintf(numberOfTrialsString, 10, "%d", numberOfTrials);
-	write(fileDescriptor, numberOfTrialsString, strlen(numberOfTrialsString) + 1);
+	strcpy(secretCodeString, secretCode);
+	strcat(secretCodeString, numberOfTrialsString);
+	write(fileDescriptor, secretCodeString, strlen(secretCodeString) + 1);
 	close(fileDescriptor);
 }
 
