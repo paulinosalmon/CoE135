@@ -11,13 +11,12 @@
 
 char secretCode[2];
 char childPID[20];
-int numberOfTrials, temp;
+int numberOfTrials, temp, repeatFlag = 0;
 int fileDescriptor;
 
 void createFIFO(char argv[]) {
 	char *myfifo = argv;
 	mkfifo(myfifo, 0666);
-	// printf("Pipe creation successful.\n");
 }
 
 void isPipeNameSpecified(int argc, char argv[]) { 
@@ -56,21 +55,18 @@ void obtainChildPID() { read(fileDescriptor, childPID, 255); }
 
 void displayJoinPrompt(char myfifo[]) {
 	char entryPrompt[225];
-	int breakFlag = 0;
-	while(!breakFlag) {
-		read(fileDescriptor, entryPrompt, 255);
+	read(fileDescriptor, entryPrompt, 255);
 		strncmp(entryPrompt, "ENTRY", 5) == 0 ?
-			printf("%s\n", entryPrompt+5), breakFlag++ : printf("");
-	}
+			printf("%s\n", entryPrompt+5) : printf("");
+	
 }
 
 void sendNumberOfTrials(char myfifo[]) {
-	static char numberOfTrialsString[255];
+	char numberOfTrialsString[255];
 	fileDescriptor = open(myfifo, O_WRONLY);
 	snprintf(numberOfTrialsString, 10, "%d", numberOfTrials);
 	write(fileDescriptor, numberOfTrialsString, strlen(numberOfTrialsString) + 1);
 	close(fileDescriptor);
-	// printf("Sent: %s\n", numberOfTrialsString);
 }
 
 int killProcess(char myfifo[]) {
@@ -80,8 +76,7 @@ int killProcess(char myfifo[]) {
 	close(fileDescriptor);
 	childPIDInt = strtol(childPID, &pointer, 10);
 	kill(childPIDInt, SIGINT);
-	printf("%d has been terminated.\n", childPIDInt);
-	// fileDescriptor = open(myfifo, O_RDONLY);
+	printf("%d has exceeded number of trials, process will terminated.\n", childPIDInt);
 	return 1;
 }
 
@@ -98,9 +93,9 @@ void listenForContestants(char myfifo[], char secretCode[]) {
 	sendNumberOfTrials(myfifo);
 
 	fileDescriptor = open(myfifo, O_RDONLY);
-	resetGuesses();
 	obtainChildPID();
-	displayJoinPrompt(myfifo);
+	repeatFlag ? printf("%s has joined the game.\n", childPID) : displayJoinPrompt(myfifo);
+	resetGuesses();
 
 	// King = Read-Only
 	while(!breakFlag) {
@@ -110,6 +105,9 @@ void listenForContestants(char myfifo[], char secretCode[]) {
 				printf("%s answers %s incorrectly! [%d guesses left.]\n", childPID, contestantGuess, temp-1), temp--;
 		breakFlag = checkNumberOfTriesLeft(myfifo);
 	}
+
+	repeatFlag++;
+	close(fileDescriptor);
 }
 
 int main(int argc, char **argv) {

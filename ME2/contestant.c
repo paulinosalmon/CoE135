@@ -11,6 +11,7 @@
 
 pid_t pid;
 int parentPID, childPID, returnValue;
+int breakFlag = 0;
 
 void initiateFork() {
 	pid = fork();
@@ -20,7 +21,6 @@ void initiateFork() {
 				 childPID = getpid();
 				 printf("Created new child process.\n");
 				 returnValue = 44;
-				 // exit(returnValue);
 		default: wait(&returnValue);
 	}
 }
@@ -55,35 +55,46 @@ int getNumberOfTrials(int fileDescriptor, char myfifo[]) {
 	numberOfTrials = strtol(numberOfTrialsString, &pointer, 10);
 	close(fileDescriptor);
 	return numberOfTrials;
-	// printf("%d number of trials obtained.\n", numberOfTrials);
 }
 
+void turnOnBreakFlag() { breakFlag = 1; printf("%d lost.\n", childPID); }
+
+void signalHandler(int sig) { signal(sig, SIG_IGN); turnOnBreakFlag(); }
+
 void spawnContestants(char myfifo[]) {
-	int fileDescriptor;
-	int numberOfTrials;
+	int fileDescriptor, numberOfTrials, temp;
 	char contestantGuess[8];
+
 	initiateFork();
 	numberOfTrials = getNumberOfTrials(fileDescriptor, myfifo);
+	temp = numberOfTrials + 1;
 
 	fileDescriptor = open(myfifo, O_WRONLY);
 	sendEntryMessage(fileDescriptor);
 
 	// Contestant = Write-Only
-	while(1) {
+	while(!breakFlag) {
 		printf("%d Please guess the code: ", childPID);
 		scanf("%s", &contestantGuess);
+		signal(SIGINT, signalHandler);
 		write(fileDescriptor, contestantGuess, strlen(contestantGuess) + 1);
+		numberOfTrials--;
+		switch(numberOfTrials) { case 0: turnOnBreakFlag(); }
 	}
+
+	close(fileDescriptor);
+	breakFlag = 0;
 }
 
 void isPipeNameSpecified(int argc, char argv[]) { 
 	argc == 2 ? 
-		spawnContestants(argv) : 
+		 printf("") : 
 			(printf("Error, no argument for pipe name.\n"), exit(0));
 }
 
 int main(int argc, char **argv) {
 	char* myfifo = argv[1];
 	isPipeNameSpecified(argc, myfifo);
+	while(1) { spawnContestants(argv[1]); }
 	return 0;
 }
