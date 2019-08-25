@@ -115,7 +115,7 @@ void spawnContestants(char myfifo[]) {
 
 	// Contestant = Write-Only
 	while(!breakFlag) {
-		signal(SIGINT, signalHandler);
+		signal(SIGTERM, signalHandler);
 		printf("%d Please guess the code: ", childPID);
 		scanf("%s", &contestantGuess);
 		write(fileDescriptor, contestantGuess, strlen(contestantGuess) + 1);
