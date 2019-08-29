@@ -11,12 +11,9 @@
 
 #define MAXIMUM_INDEX 65536
 
-char secretCode[MAXIMUM_INDEX];
-char childPID[255];
-char parentPID[255];
-int numberOfTrials, temp, repeatFlag = 0;
-int fileDescriptor;
-int lengthOfSecretCode;
+char secretCode[MAXIMUM_INDEX], childPID[255], parentPID[255]
+int numberOfTrials, temp, fileDescriptor, lengthOfSecretCode;
+int repeatFlag = 0; 
 
 void createFIFO(char argv[]) {
 	char *myfifo = argv;
@@ -60,33 +57,27 @@ void obtainParentPID() { read(fileDescriptor, parentPID, 255); }
 
 void obtainChildPID() { 
 	read(fileDescriptor, childPID, 255); 
-	!repeatFlag ? obtainParentPID() : printf("");
+	repeatFlag ? printf("") : obtainParentPID();
 }
 
 void displayJoinPrompt(char myfifo[]) {
-	char entryPrompt[225];
-	read(fileDescriptor, entryPrompt, 255);
+	char entryPrompt[MAXIMUM_INDEX];
+	read(fileDescriptor, entryPrompt, MAXIMUM_INDEX);
 		strncmp(entryPrompt, "ENTRY", 5) == 0 ?
 			printf("%s\n", entryPrompt+5) : printf("");
 	
 }
 
 void send(char myfifo[]) {
-	char numberOfTrialsString[255];
-	char secretCodeString[MAXIMUM_INDEX];
-	char lengthOfSecretCodeString[MAXIMUM_INDEX];
+	char numberOfTrialsString[255], secretCodeString[MAXIMUM_INDEX], lengthOfSecretCodeString[MAXIMUM_INDEX];
 
 	fileDescriptor = open(myfifo, O_WRONLY);
 	snprintf(lengthOfSecretCodeString, 10, "%d", lengthOfSecretCode);
-	write(fileDescriptor, lengthOfSecretCodeString, strlen(lengthOfSecretCodeString) + 1);
-	printf("Sent lengthOfSecretCodeString: |%s|\n", lengthOfSecretCodeString);
-		close(fileDescriptor);
-		fileDescriptor = open(myfifo, O_WRONLY);
 	snprintf(numberOfTrialsString, 10, "%d", numberOfTrials);
 	strcpy(secretCodeString, secretCode);
 	strcat(secretCodeString, numberOfTrialsString);
-	write(fileDescriptor, secretCodeString, strlen(secretCodeString) + 1);
-	printf("Sent secretCodeString: |%s|\n", secretCodeString);
+	write(fileDescriptor, lengthOfSecretCodeString, MAXIMUM_INDEX);
+	write(fileDescriptor, secretCodeString, MAXIMUM_INDEX);
 	close(fileDescriptor);
 }
 
@@ -158,7 +149,6 @@ void listenForContestants(char myfifo[], char secretCode[]) {
 		breakFlag = checkNumberOfTriesLeft(myfifo);
 	}
 
-	repeatFlag++;
 	close(fileDescriptor);
 }
 
@@ -166,6 +156,6 @@ int main(int argc, char **argv) {
 	char* myfifo = argv[1];
 	isPipeNameSpecified(argc, myfifo);
 	initializeSecretCode();
-	while(1) { listenForContestants(myfifo, secretCode); resetValues(); }
+	while(1) { listenForContestants(myfifo, secretCode); resetValues(); repeatFlag = 1; }
 	return 0;
 }

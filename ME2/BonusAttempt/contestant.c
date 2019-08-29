@@ -59,26 +59,16 @@ void sendEntryMessage(int fileDescriptor) {
 
 int getNumberOfTrials(int fileDescriptor, char myfifo[]) {
 	long int numberOfTrials;
-	char codeAndTrialsMessage[MAXIMUM_INDEX];
-	char numberOfTrialsString[MAXIMUM_INDEX];
-	char lengthOfSecretCodeString[MAXIMUM_INDEX];
+	char codeAndTrialsMessage[MAXIMUM_INDEX], numberOfTrialsString[MAXIMUM_INDEX], lengthOfSecretCodeString[MAXIMUM_INDEX];
 	char *pointer1, *pointer2;
 
 	fileDescriptor = open(myfifo, O_RDONLY);
 	read(fileDescriptor, lengthOfSecretCodeString, MAXIMUM_INDEX);
-	lengthOfSecretCode = strtol(lengthOfSecretCodeString, &pointer1, 10);
-	printf("RECEIVED lengthOfSecretCodeString: |%s|\n", lengthOfSecretCodeString);
-
-	// close(fileDescriptor);
-	
-	// fileDescriptor = open(myfifo, O_RDONLY);
 	read(fileDescriptor, codeAndTrialsMessage, MAXIMUM_INDEX);
+	lengthOfSecretCode = strtol(lengthOfSecretCodeString, &pointer1, 10);
 	strncpy(secretCode, codeAndTrialsMessage, lengthOfSecretCode);
-	printf("RECEIVED SECRET CODE: |%s|\n", codeAndTrialsMessage);
 	sprintf(numberOfTrialsString, "%s", codeAndTrialsMessage+lengthOfSecretCode);
 	numberOfTrials = strtol(codeAndTrialsMessage+lengthOfSecretCode, &pointer2, 10);
-
-	printf("RECEIVED NUMBER OF TRIALS: |%d|\n", numberOfTrials);
 	close(fileDescriptor);
 	return numberOfTrials;
 }
@@ -133,11 +123,7 @@ void spawnContestants(char myfifo[]) {
 		printf("%d Please guess the code: ", childPID);
 		scanf(" %[^\n]", &contestantGuess);
 		write(fileDescriptor, contestantGuess, strlen(contestantGuess) + 1);
-		// printf("SECRET CODE: |%s|\n", secretCode);
-		// printf("CONTESTANT GUESS: |%s|\n", contestantGuess);
-		// printf("Length of secret code: |%d|\n", lengthOfSecretCode);
 		if(strncmp(secretCode, contestantGuess, lengthOfSecretCode) == 0) {
-			printf("Correct! Prepare to be killed.\n");
 			recordWinningProcess();
 			turnOnBreakFlag(numberOfTrials);
 			break;
