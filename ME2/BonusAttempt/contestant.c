@@ -11,11 +11,12 @@
 
 #define MAXIMUM_INDEX 65536
 
-char secretCode[MAXIMUM_INDEX];
 pid_t pid;
-int parentPID, childPID, returnValue, lengthOfSecretCode, numberOfTrials = 1;
+int parentPID, childPID, returnValue, numberOfTrials = 1;
 int breakFlag = 0;
 int repeatFlag = 0;
+char secretCode[MAXIMUM_INDEX];
+int lengthOfSecretCode;
 
 void initiateFork() {
 	if(numberOfTrials > 0 || repeatFlag) { pid = fork(); }
@@ -61,22 +62,23 @@ int getNumberOfTrials(int fileDescriptor, char myfifo[]) {
 	char codeAndTrialsMessage[MAXIMUM_INDEX];
 	char numberOfTrialsString[MAXIMUM_INDEX];
 	char lengthOfSecretCodeString[MAXIMUM_INDEX];
-	char *pointer1;
-	char *pointer2;
+	char *pointer1, *pointer2;
 
 	fileDescriptor = open(myfifo, O_RDONLY);
 	read(fileDescriptor, lengthOfSecretCodeString, MAXIMUM_INDEX);
-	printf("Received length of code STRING: %s\n", lengthOfSecretCodeString);
-	lengthOfSecretCode = strtol(lengthOfSecretCodeString, &pointer2, 10);
-	printf("Received length of code: <%d>\n", lengthOfSecretCode);
+	lengthOfSecretCode = strtol(lengthOfSecretCodeString, &pointer1, 10);
+	printf("RECEIVED lengthOfSecretCodeString: |%s|\n", lengthOfSecretCodeString);
 
-
-	read(fileDescriptor, codeAndTrialsMessage, 255);
+	// close(fileDescriptor);
+	
+	// fileDescriptor = open(myfifo, O_RDONLY);
+	read(fileDescriptor, codeAndTrialsMessage, MAXIMUM_INDEX);
 	strncpy(secretCode, codeAndTrialsMessage, lengthOfSecretCode);
-	printf("Received secret code: <%s>\n", secretCode);
+	printf("RECEIVED SECRET CODE: |%s|\n", codeAndTrialsMessage);
 	sprintf(numberOfTrialsString, "%s", codeAndTrialsMessage+lengthOfSecretCode);
-	numberOfTrials = strtol(codeAndTrialsMessage+lengthOfSecretCode, &pointer1, 10);
-	printf("Received number of trials: %d\n", numberOfTrials);
+	numberOfTrials = strtol(codeAndTrialsMessage+lengthOfSecretCode, &pointer2, 10);
+
+	printf("RECEIVED NUMBER OF TRIALS: |%d|\n", numberOfTrials);
 	close(fileDescriptor);
 	return numberOfTrials;
 }
@@ -129,19 +131,17 @@ void spawnContestants(char myfifo[]) {
 	while(!breakFlag) {
 		signal(SIGTERM, signalHandler);
 		printf("%d Please guess the code: ", childPID);
-		scanf("%[^\n]", &contestantGuess);
+		scanf(" %[^\n]", &contestantGuess);
 		write(fileDescriptor, contestantGuess, strlen(contestantGuess) + 1);
-		printf("Sent: |%s|\n", contestantGuess);
+		// printf("SECRET CODE: |%s|\n", secretCode);
+		// printf("CONTESTANT GUESS: |%s|\n", contestantGuess);
+		// printf("Length of secret code: |%d|\n", lengthOfSecretCode);
 		if(strncmp(secretCode, contestantGuess, lengthOfSecretCode) == 0) {
-			printf("GUESSED CORRECTLY!\n");
-			scanf("%s GUESSED CORRECTLY!\n", &contestantGuess);
+			printf("Correct! Prepare to be killed.\n");
 			recordWinningProcess();
 			turnOnBreakFlag(numberOfTrials);
 			break;
 		}
-
-		printf("GUESSED WRONG!\n");
-		scanf("%s GUESSED WRONG!\n", &contestantGuess);
 		numberOfTrials--;
 		switch(numberOfTrials) { case 0: breakFlag ? printf("") : recordLosingProcess(), turnOnBreakFlag(numberOfTrials); }
 	}

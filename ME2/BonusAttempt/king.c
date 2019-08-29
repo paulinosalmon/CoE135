@@ -12,8 +12,11 @@
 #define MAXIMUM_INDEX 65536
 
 char secretCode[MAXIMUM_INDEX];
-char childPID[255], parentPID[255];
-int numberOfTrials, fileDescriptor, temp, lengthOfSecretCode, repeatFlag = 0;
+char childPID[255];
+char parentPID[255];
+int numberOfTrials, temp, repeatFlag = 0;
+int fileDescriptor;
+int lengthOfSecretCode;
 
 void createFIFO(char argv[]) {
 	char *myfifo = argv;
@@ -38,8 +41,6 @@ char* getSecretCode() {
 	printf("Enter the secret code: ");
 	scanf(" %[^\n]", &secretCode);
 	lengthOfSecretCode = strlen(secretCode);
-	printf("Secret code is: %s\n", secretCode);
-	printf("Secret code length is: %d\n", lengthOfSecretCode);
 	return secretCode;
 }
 
@@ -70,18 +71,22 @@ void displayJoinPrompt(char myfifo[]) {
 	
 }
 
-void sendNumberOfTrials(char myfifo[]) {
-	char numberOfTrialsString[MAXIMUM_INDEX];
+void send(char myfifo[]) {
+	char numberOfTrialsString[255];
 	char secretCodeString[MAXIMUM_INDEX];
 	char lengthOfSecretCodeString[MAXIMUM_INDEX];
 
 	fileDescriptor = open(myfifo, O_WRONLY);
-	snprintf(numberOfTrialsString, 10, "%d", numberOfTrials);
 	snprintf(lengthOfSecretCodeString, 10, "%d", lengthOfSecretCode);
+	write(fileDescriptor, lengthOfSecretCodeString, strlen(lengthOfSecretCodeString) + 1);
+	printf("Sent lengthOfSecretCodeString: |%s|\n", lengthOfSecretCodeString);
+		close(fileDescriptor);
+		fileDescriptor = open(myfifo, O_WRONLY);
+	snprintf(numberOfTrialsString, 10, "%d", numberOfTrials);
 	strcpy(secretCodeString, secretCode);
 	strcat(secretCodeString, numberOfTrialsString);
-	write(fileDescriptor, lengthOfSecretCodeString, strlen(lengthOfSecretCodeString) + 1);
 	write(fileDescriptor, secretCodeString, strlen(secretCodeString) + 1);
+	printf("Sent secretCodeString: |%s|\n", secretCodeString);
 	close(fileDescriptor);
 }
 
@@ -127,7 +132,7 @@ void listenForContestants(char myfifo[], char secretCode[]) {
 	char contestantGuess[MAXIMUM_INDEX];
 	int breakFlag = 0;
 
-	sendNumberOfTrials(myfifo);
+	send(myfifo);
 
 	fileDescriptor = open(myfifo, O_RDONLY);
 	obtainChildPID();
@@ -137,10 +142,8 @@ void listenForContestants(char myfifo[], char secretCode[]) {
 	// King = Read-Only
 	while(!breakFlag) {
 		read(fileDescriptor, contestantGuess, MAXIMUM_INDEX);
-		printf("Received: |%s|\n", contestantGuess);
 		if(strncmp(secretCode, contestantGuess, lengthOfSecretCode) == 0) { 
-			printf("%s answers |%s| correctly!\n", childPID, contestantGuess);
-			scanf("%s GUESSED CORRECTLY!\n", &contestantGuess);
+			printf("%s answers %s correctly!\n", childPID, contestantGuess);
 		    recordWinningProcess();
 		    initializeSecretCode(); 
 		    resetGuesses(); 
@@ -150,8 +153,7 @@ void listenForContestants(char myfifo[], char secretCode[]) {
 		    break;
 		} 
 		else
-			printf("%s answers |%s| incorrectly! [%d guesses left.]\n", childPID, contestantGuess, temp-1), temp--;
-			scanf("%s GUESSED WRONG!\n", &contestantGuess);
+			printf("%s answers %s incorrectly! [%d guesses left.]\n", childPID, contestantGuess, temp-1), temp--;
 		
 		breakFlag = checkNumberOfTriesLeft(myfifo);
 	}
