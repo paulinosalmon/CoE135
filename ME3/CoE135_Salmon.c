@@ -12,29 +12,16 @@
 #include <sys/stat.h>
 
 #define STDIN 0
+int main();
+void signalHandler(int); 
 
-int playerScore, numberOfQuestions, breakFlag = 0;
+int playerScore, numberOfQuestions, repeatFlag = 0;
 
 void seedRandomizer() { srand(time(NULL)); }
 
 void resetScores() {
 	playerScore = 0;
 	numberOfQuestions = 0;
-}
-
-void checkQuitPrompt(int quitPrompt) {
-	if(quitPrompt == 89 || quitPrompt == 121) {
-		printf("SUCCESSFUL TERMINATION.\n");
-		exit(0);
-	}
-	else if(quitPrompt == 10) {
-		printf("NEW GAME DETECTED.\n");
-		exit(0);
-	}
-	else {
-		printf("Invalid input. Terminating program...\n");
-		exit(0);
-	}
 }
 
 int randomizeInputs() { return (rand() % 10); }
@@ -45,6 +32,8 @@ void compareAnswers(int userAnswer, int correctAnswer) {
 	userAnswer == correctAnswer ? 
 		printf("Correct!\n"), playerScore++, numberOfQuestions++ : 
 			printf("Incorrect! User input: %d | Correct answer: %d \n", userAnswer, correctAnswer), numberOfQuestions++ ;
+
+	// repeatFlag ? fflush(stdin), fflush(stdout) : printf("");
 }
 
 void initiateRandomizer() {
@@ -74,6 +63,19 @@ void initiateRandomizer() {
 	}
 }
 
+void checkQuitPrompt(int quitPrompt) {
+	if(quitPrompt == 89 || quitPrompt == 121)
+		exit(0);
+	else if(quitPrompt == 10) {
+		signal(SIGINT, signalHandler); 
+		main();
+	}
+	else {
+		printf("Invalid input. Terminating program...\n");
+		exit(0);
+	}
+}
+
 void signalHandler(int sig) { 
 	int quitPrompt;
 	fd_set readfds;
@@ -93,6 +95,7 @@ void signalHandler(int sig) {
 		quitPrompt = getchar();
 		checkQuitPrompt(quitPrompt);
 	}
+
 }
 
 int main() {
