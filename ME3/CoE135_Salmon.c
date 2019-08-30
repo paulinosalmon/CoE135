@@ -22,23 +22,19 @@ void resetScores() {
 	numberOfQuestions = 0;
 }
 
-void checkQuitPrompt(char quitPrompt[]) {
-	strncmp(quitPrompt, "Y", 1);
-	if(!(strncmp(quitPrompt, "Y", 1)) || !(strncmp(quitPrompt, "y", 1)))
-		breakFlag = 1;
-	else if(!(strncmp(quitPrompt, "\n", 1)))
-		breakFlag = 0;
-}
-
-void signalHandler(int sig) { 
-	char quitPrompt[10];
-
-	signal(SIGINT, signalHandler); 
-	printf("\nYou got %d out of %d items correctly.\n", playerScore, numberOfQuestions);
-	resetScores();
-	printf("\nPress y or Y if you want to finish the game. Press enter to start a new one. \n"); 
-    scanf("%s", &quitPrompt);
-    checkQuitPrompt(quitPrompt);
+void checkQuitPrompt(int quitPrompt) {
+	if(quitPrompt == 89 || quitPrompt == 121) {
+		printf("SUCCESSFUL TERMINATION.\n");
+		exit(0);
+	}
+	else if(quitPrompt == 10) {
+		printf("NEW GAME DETECTED.\n");
+		exit(0);
+	}
+	else {
+		printf("Invalid input. Terminating program...\n");
+		exit(0);
+	}
 }
 
 int randomizeInputs() { return (rand() % 10); }
@@ -78,6 +74,27 @@ void initiateRandomizer() {
 	}
 }
 
+void signalHandler(int sig) { 
+	int quitPrompt;
+	fd_set readfds;
+
+	FD_ZERO(&readfds);
+	FD_SET(STDIN, &readfds);
+
+	signal(SIGINT, signalHandler); 
+	printf("\nYou got %d out of %d items correctly.\n", playerScore, numberOfQuestions-1);
+	resetScores();
+	printf("\nPress y or Y if you want to finish the game. Press enter to start a new one.\n"); 
+    select(STDIN+1, &readfds, NULL, NULL, NULL);
+
+    getchar();	// catch stray newline
+
+	if(FD_ISSET(STDIN, &readfds)) {
+		quitPrompt = getchar();
+		checkQuitPrompt(quitPrompt);
+	}
+}
+
 int main() {
 
 	seedRandomizer();
@@ -85,8 +102,6 @@ int main() {
 	while(1) { 
 		signal(SIGINT, signalHandler); 
 		initiateRandomizer(); 
-		if(breakFlag)
-			break;
 	}
 
 	return 0;
