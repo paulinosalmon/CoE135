@@ -133,7 +133,7 @@ void listenForContestants(char myfifo[], char secretCode[]) {
 	// King = Read-Only
 	while(!breakFlag) {
 		read(fileDescriptor, contestantGuess, MAXIMUM_INDEX);
-		if(strncmp(secretCode, contestantGuess, lengthOfSecretCode) == 0) { 
+		if(strncmp(secretCode, contestantGuess, MAXIMUM_INDEX) == 0) { 
 			printf("%s answers %s correctly!\n", childPID, contestantGuess);
 		    recordWinningProcess();
 		    initializeSecretCode(); 

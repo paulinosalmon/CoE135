@@ -123,7 +123,7 @@ void spawnContestants(char myfifo[]) {
 		printf("%d Please guess the code: ", childPID);
 		scanf(" %[^\n]", &contestantGuess);
 		write(fileDescriptor, contestantGuess, strlen(contestantGuess) + 1);
-		if(strncmp(secretCode, contestantGuess, lengthOfSecretCode) == 0) {
+		if(strncmp(secretCode, contestantGuess, MAXIMUM_INDEX) == 0) {
 			recordWinningProcess();
 			turnOnBreakFlag(numberOfTrials);
 			break;
