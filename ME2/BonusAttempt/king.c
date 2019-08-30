@@ -11,7 +11,7 @@
 
 #define MAXIMUM_INDEX 65536
 
-char secretCode[MAXIMUM_INDEX], childPID[255], parentPID[255]
+char secretCode[MAXIMUM_INDEX], childPID[255], parentPID[255];
 int numberOfTrials, temp, fileDescriptor, lengthOfSecretCode;
 int repeatFlag = 0; 
 
