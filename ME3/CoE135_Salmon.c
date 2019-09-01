@@ -39,14 +39,11 @@ void compareAnswers(int userAnswer, int correctAnswer) {
 }
 
 void initiateRandomizer() {
-
 	operandA = randomizeInputs();
 	operandB = randomizeInputs();
 	correctAnswer = getAnswer(operandA, operandB);
 	printf("%d + %d = \n", operandA, operandB);
-
 	numberOfQuestions++;
-	
 }
 
 int checkQuitPrompt(int quitPrompt) {
@@ -67,26 +64,21 @@ void signalHandler(int sig) {
 	fflush(stdout);
 	int quitPrompt;
 	fd_set readfds;
-
 	FD_ZERO(&readfds);
 	FD_SET(STDIN, &readfds);
 
 	printf("\nYou got %d out of %d items correctly.\n", playerScore, numberOfQuestions-1);
 	resetScores();
-	printf("\nPress y or Y if you want to finish the game. Press enter to start a new one.\n"); 
-    select(STDIN+1, &readfds, NULL, NULL, NULL);
+	printf("\nPress y or Y if you want to finish the game. Press enter to start a new one.\n");
+	select(STDIN+1, &readfds, NULL, NULL, NULL);
 
 	if(FD_ISSET(STDIN, &readfds)) {
 		quitPrompt = getchar();
 		if(checkQuitPrompt(quitPrompt)) {
 			tv.tv_sec = 3;
-
-			FD_ZERO(&readfds);
-			FD_SET(STDIN, &readfds);
-			fflush(stdout);
+			signal(SIGINT, signalHandler); 
 
 			initiateRandomizer(); 
-
 			select(STDIN+1, &readfds, NULL, NULL, &tv);
 
 			if(FD_ISSET(STDIN, &readfds)) {
@@ -99,7 +91,29 @@ void signalHandler(int sig) {
 				repeatFlag = 1;
 				return;
 			}
+
 		}
+	}
+}
+
+void listenForInput() {
+
+	tv.tv_sec = 3;
+
+	FD_ZERO(&readfds);
+	FD_SET(STDIN, &readfds);
+	fflush(stdout);
+
+	select(STDIN+1, &readfds, NULL, NULL, &tv);
+
+	if(!repeatFlag) {
+		if(FD_ISSET(STDIN, &readfds)) {
+			scanf("%d", &userAnswer);
+			getchar(); // catch stray newline
+			compareAnswers(userAnswer, correctAnswer);
+		}
+		else 
+			printf("Incorrect: Timeout.\n");
 	}
 }
 
@@ -111,25 +125,8 @@ int main() {
 
 	while(1) {
 		repeatFlag = 0;
-		tv.tv_sec = 3;
-
-		FD_ZERO(&readfds);
-		FD_SET(STDIN, &readfds);
-		fflush(stdout);
-
 		initiateRandomizer(); 
-
-		select(STDIN+1, &readfds, NULL, NULL, &tv);
-
-		if(!repeatFlag) {
-			if(FD_ISSET(STDIN, &readfds)) {
-				scanf("%d", &userAnswer);
-				getchar(); // catch stray newline
-				compareAnswers(userAnswer, correctAnswer);
-			}
-			else 
-				printf("Incorrect: Timeout.\n");
-		}
+		listenForInput();
 	}
 
 	return 0;
