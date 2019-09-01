@@ -79,21 +79,38 @@ void signalHandler(int sig) {
 	if(FD_ISSET(STDIN, &readfds)) {
 		quitPrompt = getchar();
 		if(checkQuitPrompt(quitPrompt)) {
+			tv.tv_sec = 3;
+
+			FD_ZERO(&readfds);
+			FD_SET(STDIN, &readfds);
 			fflush(stdout);
-			initiateRandomizer();
+
+			initiateRandomizer(); 
+
+			select(STDIN+1, &readfds, NULL, NULL, &tv);
+
+			if(FD_ISSET(STDIN, &readfds)) {
+				scanf("%d", &userAnswer);
+				getchar(); // catch stray newline
+				compareAnswers(userAnswer, correctAnswer);
+			}
+			else {
+				printf("Incorrect: Timeout.\n");
+				repeatFlag = 1;
+				return;
+			}
 		}
 	}
-
 }
 
 int main() {
 
 	setbuf(stdout, NULL);
-	repeatFlag = 0;
 	seedRandomizer();
 	signal(SIGINT, signalHandler); 
 
 	while(1) {
+		repeatFlag = 0;
 		tv.tv_sec = 3;
 
 		FD_ZERO(&readfds);
@@ -104,13 +121,14 @@ int main() {
 
 		select(STDIN+1, &readfds, NULL, NULL, &tv);
 
-		if(FD_ISSET(STDIN, &readfds)) {
-			scanf("%d", &userAnswer);
-			getchar(); // catch stray newline
-			compareAnswers(userAnswer, correctAnswer);
-		}
-		else {
-			printf("Incorrect: Timeout.\n");
+		if(!repeatFlag) {
+			if(FD_ISSET(STDIN, &readfds)) {
+				scanf("%d", &userAnswer);
+				getchar(); // catch stray newline
+				compareAnswers(userAnswer, correctAnswer);
+			}
+			else 
+				printf("Incorrect: Timeout.\n");
 		}
 	}
 
