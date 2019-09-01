@@ -12,10 +12,14 @@
 #include <sys/stat.h>
 
 #define STDIN 0
+
 int main();
 void signalHandler(int); 
 
 int playerScore, numberOfQuestions, repeatFlag = 0;
+int operandA, operandB, userAnswer, correctAnswer;
+struct timeval tv;
+fd_set readfds;
 
 void seedRandomizer() { srand(time(NULL)); }
 
@@ -30,81 +34,84 @@ int getAnswer(int operandA, int operandB) { return operandA + operandB; }
 
 void compareAnswers(int userAnswer, int correctAnswer) {
 	userAnswer == correctAnswer ? 
-		printf("Correct!\n"), playerScore++, numberOfQuestions++ : 
-			printf("Incorrect! User input: %d | Correct answer: %d \n", userAnswer, correctAnswer), numberOfQuestions++ ;
-
-	// repeatFlag ? fflush(stdin), fflush(stdout) : printf("");
+		printf("Correct!\n"), playerScore++ : 
+			printf("Incorrect! User input: %d | Correct answer: %d \n", userAnswer, correctAnswer) ;
 }
 
 void initiateRandomizer() {
-	int operandA, operandB, userAnswer, correctAnswer;
-	struct timeval tv;
-	fd_set readfds;
-
-	tv.tv_sec = 3;
-
-	FD_ZERO(&readfds);
-	FD_SET(STDIN, &readfds);
 
 	operandA = randomizeInputs();
 	operandB = randomizeInputs();
 	correctAnswer = getAnswer(operandA, operandB);
-
 	printf("%d + %d = \n", operandA, operandB);
-	select(STDIN+1, &readfds, NULL, NULL, &tv);
 
-	if(FD_ISSET(STDIN, &readfds)) {
-		scanf("%d", &userAnswer);
-		compareAnswers(userAnswer, correctAnswer);
-	}
-	else {
-		printf("Incorrect: Timeout.\n");
-		numberOfQuestions++;
-	}
+	numberOfQuestions++;
+	
 }
 
-void checkQuitPrompt(int quitPrompt) {
+int checkQuitPrompt(int quitPrompt) {
 	if(quitPrompt == 89 || quitPrompt == 121)
 		exit(0);
 	else if(quitPrompt == 10) {
-		signal(SIGINT, signalHandler); 
-		main();
+		repeatFlag = 1;
+		return 1;
 	}
 	else {
 		printf("Invalid input. Terminating program...\n");
 		exit(0);
 	}
+	return 0;
 }
 
 void signalHandler(int sig) { 
+	fflush(stdout);
 	int quitPrompt;
 	fd_set readfds;
 
 	FD_ZERO(&readfds);
 	FD_SET(STDIN, &readfds);
 
-	signal(SIGINT, signalHandler); 
 	printf("\nYou got %d out of %d items correctly.\n", playerScore, numberOfQuestions-1);
 	resetScores();
 	printf("\nPress y or Y if you want to finish the game. Press enter to start a new one.\n"); 
     select(STDIN+1, &readfds, NULL, NULL, NULL);
 
-    getchar();	// catch stray newline
-
 	if(FD_ISSET(STDIN, &readfds)) {
 		quitPrompt = getchar();
-		checkQuitPrompt(quitPrompt);
+		if(checkQuitPrompt(quitPrompt)) {
+			fflush(stdout);
+			initiateRandomizer();
+		}
 	}
 
 }
 
 int main() {
 
+	setbuf(stdout, NULL);
+	repeatFlag = 0;
 	seedRandomizer();
+	signal(SIGINT, signalHandler); 
 
-	while(1) { 
-		signal(SIGINT, signalHandler); 
+	while(1) {
+		tv.tv_sec = 3;
+
+		FD_ZERO(&readfds);
+		FD_SET(STDIN, &readfds);
+		fflush(stdout);
+
 		initiateRandomizer(); 
+
+		select(STDIN+1, &readfds, NULL, NULL, &tv);
+
+		if(FD_ISSET(STDIN, &readfds)) {
+			scanf("%d", &userAnswer);
+			getchar(); // catch stray newline
+			compareAnswers(userAnswer, correctAnswer);
+		}
+		else {
+			printf("Incorrect: Timeout.\n");
+		}
 	}
 
 	return 0;
