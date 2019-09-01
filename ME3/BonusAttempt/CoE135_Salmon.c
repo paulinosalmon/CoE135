@@ -16,6 +16,7 @@
 
 int playerScore, numberOfQuestions, repeatFlag = 0;
 int operandA, operandB, userAnswer, correctAnswer, operation;
+char userAnswerString[255];
 char operationSign[5];
 struct timeval tv;
 fd_set readfds;
@@ -77,6 +78,22 @@ void initiateRandomizer() {
 	numberOfQuestions++;
 }
 
+int myAtoi(char* str) {
+	int convertedInt = 0;
+
+	if(str[0] == '-') {
+		for(int i = 1; i < strlen(str) - 1; ++i) 
+			convertedInt = convertedInt * 10 + str[i] - '0';
+		return convertedInt * -1;
+	}
+	else {
+		for(int i = 0; i < strlen(str) - 1; ++i) 
+			convertedInt = convertedInt * 10 + str[i] - '0';
+		return convertedInt;
+	}
+
+}
+
 int checkQuitPrompt(int quitPrompt) {
 	if(quitPrompt == 89 || quitPrompt == 121)
 		exit(0);
@@ -113,8 +130,8 @@ void signalHandler(int sig) {
 			select(STDIN+1, &readfds, NULL, NULL, &tv);
 
 			if(FD_ISSET(STDIN, &readfds)) {
-				scanf("%d", &userAnswer);
-				getchar(); // catch stray newline
+				fgets(userAnswerString, 255, stdin);
+				userAnswer = myAtoi(userAnswerString);
 				compareAnswers(userAnswer, correctAnswer);
 			}
 			else {
@@ -139,8 +156,8 @@ void listenForInput() {
 
 	if(!repeatFlag) {
 		if(FD_ISSET(STDIN, &readfds)) {
-			scanf("%d", &userAnswer);
-			getchar(); // catch stray newline
+			fgets(userAnswerString, 255, stdin);
+			userAnswer = myAtoi(userAnswerString);
 			compareAnswers(userAnswer, correctAnswer);
 		}
 		else 

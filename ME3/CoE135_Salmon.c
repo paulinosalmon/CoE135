@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <time.h>
+#include <ctype.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/wait.h>
@@ -13,24 +14,51 @@
 
 #define STDIN 0
 
-int main();
-void signalHandler(int); 
-
 int playerScore, numberOfQuestions, repeatFlag = 0;
-int operandA, operandB, userAnswer, correctAnswer;
+int operandA, operandB, userAnswer, correctAnswer, operation;
+char userAnswerString[255];
+char operationSign[5];
 struct timeval tv;
 fd_set readfds;
 
 void seedRandomizer() { srand(time(NULL)); }
 
+int randomizeInputs() { return (rand() % 10); }
+
+int randomizeOperation() { return (rand() % 4); }
+
 void resetScores() {
 	playerScore = 0;
 	numberOfQuestions = 0;
+	operandA = 0;
+	operandB = 0;
+	userAnswer = 0;
+	correctAnswer = 0;
+	operation = 0;
 }
 
-int randomizeInputs() { return (rand() % 10); }
+void divisionByZero() {
+	while(operation == 4 && operandB == 0) 
+		operandB = randomizeInputs();
+}
 
-int getAnswer(int operandA, int operandB) { return operandA + operandB; }
+int getAnswer(int operandA, int operandB, int operation) { 
+	switch(operation) {
+		case 0: return operandA + operandB; 
+		case 1: return operandA - operandB; 
+		case 2: return operandA * operandB; 
+		default: return operandA / operandB; 
+	}
+}
+
+char* getOperationSign() {
+	switch(operation) {
+		case 0: return "+"; 
+		case 1: return "-"; 
+		case 2: return "*"; 
+		default: return "/"; 
+	}
+}
 
 void compareAnswers(int userAnswer, int correctAnswer) {
 	userAnswer == correctAnswer ? 
@@ -41,9 +69,29 @@ void compareAnswers(int userAnswer, int correctAnswer) {
 void initiateRandomizer() {
 	operandA = randomizeInputs();
 	operandB = randomizeInputs();
-	correctAnswer = getAnswer(operandA, operandB);
-	printf("%d + %d = \n", operandA, operandB);
+	operation = randomizeOperation();
+
+	divisionByZero();
+	
+	correctAnswer = getAnswer(operandA, operandB, operation);
+	printf("%d %s %d = \n", operandA, getOperationSign(), operandB);
 	numberOfQuestions++;
+}
+
+int myAtoi(char* str) {
+	int convertedInt = 0;
+
+	if(str[0] == '-') {
+		for(int i = 1; i < strlen(str) - 1; ++i) 
+			convertedInt = convertedInt * 10 + str[i] - '0';
+		return convertedInt * -1;
+	}
+	else {
+		for(int i = 0; i < strlen(str) - 1; ++i) 
+			convertedInt = convertedInt * 10 + str[i] - '0';
+		return convertedInt;
+	}
+
 }
 
 int checkQuitPrompt(int quitPrompt) {
@@ -82,8 +130,8 @@ void signalHandler(int sig) {
 			select(STDIN+1, &readfds, NULL, NULL, &tv);
 
 			if(FD_ISSET(STDIN, &readfds)) {
-				scanf("%d", &userAnswer);
-				getchar(); // catch stray newline
+				fgets(userAnswerString, 255, stdin);
+				userAnswer = myAtoi(userAnswerString);
 				compareAnswers(userAnswer, correctAnswer);
 			}
 			else {
@@ -108,8 +156,8 @@ void listenForInput() {
 
 	if(!repeatFlag) {
 		if(FD_ISSET(STDIN, &readfds)) {
-			scanf("%d", &userAnswer);
-			getchar(); // catch stray newline
+			fgets(userAnswerString, 255, stdin);
+			userAnswer = myAtoi(userAnswerString);
 			compareAnswers(userAnswer, correctAnswer);
 		}
 		else 
