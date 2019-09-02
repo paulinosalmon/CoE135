@@ -15,7 +15,7 @@
 #define STDIN 0
 
 int playerScore, numberOfQuestions, repeatFlag = 0;
-int operandA, operandB, userAnswer, correctAnswer, operation;
+int operandA, operandB, userAnswer, correctAnswer, operation, undefinedFlag, indeterminateFlag;
 char userAnswerString[255];
 char operationSign[5];
 struct timeval tv;
@@ -37,11 +37,6 @@ void resetScores() {
 	operation = 0;
 }
 
-void divisionByZero() {
-	while(operation == 4 && operandB == 0) 
-		operandB = randomizeInputs();
-}
-
 int getAnswer(int operandA, int operandB, int operation) { 
 	switch(operation) {
 		case 0: return operandA + operandB; 
@@ -49,6 +44,15 @@ int getAnswer(int operandA, int operandB, int operation) {
 		case 2: return operandA * operandB; 
 		default: return operandA / operandB; 
 	}
+}
+
+void checkSpecialExceptions() {
+	if(operandA == 0 && operandB == 0 && operation == 3) 
+		correctAnswer = 57;	// int value of i
+	else if(operandB == 0 && operation == 3)  
+		correctAnswer = 69;	// int value of u
+	else 
+		correctAnswer = getAnswer(operandA, operandB, operation);
 }
 
 char* getOperationSign() {
@@ -71,10 +75,9 @@ void initiateRandomizer() {
 	operandB = randomizeInputs();
 	operation = randomizeOperation();
 
-	divisionByZero();
-	
-	correctAnswer = getAnswer(operandA, operandB, operation);
 	printf("%d %s %d = \n", operandA, getOperationSign(), operandB);
+	checkSpecialExceptions();
+	
 	numberOfQuestions++;
 }
 
@@ -94,23 +97,39 @@ int myAtoi(char* str) {
 
 }
 
-int checkQuitPrompt(int quitPrompt) {
-	if(quitPrompt == 89 || quitPrompt == 121)
-		exit(0);
-	else if(quitPrompt == 10) {
-		repeatFlag = 1;
-		return 1;
+int checkQuitPrompt(char quitPromptString[]) {
+	int quitPrompt;
+
+	quitPrompt = myAtoi(quitPromptString);
+
+	while(1) {
+		if(quitPrompt == 73 || quitPrompt == 41)
+			exit(0);
+		else if(quitPrompt == 0) {
+			repeatFlag = 1;
+			return 1;
+		}
+		else {
+			printf("Invalid input. Try again.\n");
+			fgets(quitPromptString, 255, stdin);
+			quitPrompt = myAtoi(quitPromptString);
+		}
 	}
+}
+
+void checkForBlankInput() {
+	if(userAnswerString[0] == '\n')
+		printf("Incorrect! NO INPUT DETECTED | Correct answer: %d \n", correctAnswer) ;
 	else {
-		printf("Invalid input. Terminating program...\n");
-		exit(0);
+		userAnswer = myAtoi(userAnswerString);
+		compareAnswers(userAnswer, correctAnswer);
 	}
-	return 0;
 }
 
 void signalHandler(int sig) { 
+	char quitPromptString[255];
+
 	fflush(stdout);
-	int quitPrompt;
 	fd_set readfds;
 	FD_ZERO(&readfds);
 	FD_SET(STDIN, &readfds);
@@ -121,8 +140,8 @@ void signalHandler(int sig) {
 	select(STDIN+1, &readfds, NULL, NULL, NULL);
 
 	if(FD_ISSET(STDIN, &readfds)) {
-		quitPrompt = getchar();
-		if(checkQuitPrompt(quitPrompt)) {
+		fgets(quitPromptString, 255, stdin);
+		if(checkQuitPrompt(quitPromptString)) {
 			tv.tv_sec = 3;
 			signal(SIGINT, signalHandler); 
 
@@ -131,8 +150,7 @@ void signalHandler(int sig) {
 
 			if(FD_ISSET(STDIN, &readfds)) {
 				fgets(userAnswerString, 255, stdin);
-				userAnswer = myAtoi(userAnswerString);
-				compareAnswers(userAnswer, correctAnswer);
+				checkForBlankInput();
 			}
 			else {
 				printf("Incorrect: Timeout.\n");
@@ -157,8 +175,7 @@ void listenForInput() {
 	if(!repeatFlag) {
 		if(FD_ISSET(STDIN, &readfds)) {
 			fgets(userAnswerString, 255, stdin);
-			userAnswer = myAtoi(userAnswerString);
-			compareAnswers(userAnswer, correctAnswer);
+			checkForBlankInput();
 		}
 		else 
 			printf("Incorrect: Timeout.\n");
