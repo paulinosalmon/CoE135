@@ -15,7 +15,7 @@
 #define STDIN 0
 
 int playerScore, numberOfQuestions, repeatFlag = 0;
-int operandA, operandB, userAnswer, correctAnswer, operation, undefinedFlag, indeterminateFlag;
+int operandA, operandB, userAnswer, correctAnswer, operation, undefinedFlag = 0, indeterminateFlag = 0;
 char userAnswerString[255];
 char operationSign[5];
 struct timeval tv;
@@ -47,10 +47,14 @@ int getAnswer(int operandA, int operandB, int operation) {
 }
 
 void checkSpecialExceptions() {
-	if(operandA == 0 && operandB == 0 && operation == 3) 
+	if(operandA == 0 && operandB == 0 && operation == 3) {
 		correctAnswer = 57;	// int value of i
-	else if(operandB == 0 && operation == 3)  
+		indeterminateFlag = 1;
+	}
+	else if(operandB == 0 && operation == 3) {
 		correctAnswer = 69;	// int value of u
+		undefinedFlag = 1;
+	}
 	else 
 		correctAnswer = getAnswer(operandA, operandB, operation);
 }
@@ -65,9 +69,22 @@ char* getOperationSign() {
 }
 
 void compareAnswers(int userAnswer, int correctAnswer) {
-	userAnswer == correctAnswer ? 
-		printf("Correct!\n"), playerScore++ : 
+	if(userAnswer == correctAnswer) { 
+		printf("Correct!\n");
+		playerScore++;
+	}
+	else {
+		if(indeterminateFlag) {
+			printf("Incorrect! User input: %d | Correct answer: i \n", userAnswer);
+			indeterminateFlag = 0;
+		}
+		else if(undefinedFlag) {
+			printf("Incorrect! User input: %d | Correct answer: u \n", userAnswer);
+			undefinedFlag = 0;
+		}
+		else
 			printf("Incorrect! User input: %d | Correct answer: %d \n", userAnswer, correctAnswer) ;
+	}
 }
 
 void initiateRandomizer() {
@@ -118,8 +135,18 @@ int checkQuitPrompt(char quitPromptString[]) {
 }
 
 void checkForBlankInput() {
-	if(userAnswerString[0] == '\n')
-		printf("Incorrect! NO INPUT DETECTED | Correct answer: %d \n", correctAnswer) ;
+	if(userAnswerString[0] == '\n') {
+		if(indeterminateFlag) {
+			printf("Incorrect!  NO INPUT DETECTED | Correct answer: i \n");
+			indeterminateFlag = 0;
+		}
+		else if(undefinedFlag) {
+			printf("Incorrect!  NO INPUT DETECTED | Correct answer: u \n");
+			undefinedFlag = 0;
+		}
+		else
+			printf("Incorrect! NO INPUT DETECTED | Correct answer: %d \n", correctAnswer);
+	}
 	else {
 		userAnswer = myAtoi(userAnswerString);
 		compareAnswers(userAnswer, correctAnswer);
