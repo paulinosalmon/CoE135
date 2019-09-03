@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
+#include <termios.h>
 #include <time.h>
 #include <ctype.h>
 #include <sys/types.h>
@@ -20,6 +21,7 @@ char userAnswerString[255];
 char operationSign[5];
 struct timeval tv;
 fd_set readfds;
+static struct termios old, current;
 
 void seedRandomizer() { srand(time(NULL)); }
 
@@ -114,22 +116,46 @@ int myAtoi(char* str) {
 
 }
 
-int checkQuitPrompt(char quitPromptString[]) {
-	int quitPrompt;
+void initTermios(int echo) {
+	tcgetattr(0, &old); 
+	current = old; 
+	current.c_lflag &= ~ICANON; 
+	if (echo) 
+		current.c_lflag |= ECHO; 
+	else 
+		current.c_lflag &= ~ECHO; 
 
-	quitPrompt = myAtoi(quitPromptString);
+	tcsetattr(0, TCSANOW, &current); 
+}
+
+void resetTermios(void) { tcsetattr(0, TCSANOW, &old); }
+
+char getch_(int echo) {
+  char ch;
+  initTermios(echo);
+  ch = getchar();
+  resetTermios();
+  return ch;
+}
+
+char getch(void) { return getch_(0); }
+
+char getche(void) { return getch_(1); }
+
+int checkQuitPrompt() {
+	char c;
+	c = getche();
 
 	while(1) {
-		if(quitPrompt == 73 || quitPrompt == 41)
+		if(c == 'y' || c == 'Y')
 			exit(0);
-		else if(quitPrompt == 0) {
+		else if(c == '\n') {
 			repeatFlag = 1;
 			return 1;
 		}
 		else {
-			printf("Invalid input. Try again.\n");
-			fgets(quitPromptString, 255, stdin);
-			quitPrompt = myAtoi(quitPromptString);
+			printf("\nInvalid input. Try again.\n");
+			c = getche();
 		}
 	}
 }
@@ -154,7 +180,6 @@ void checkForBlankInput() {
 }
 
 void signalHandler(int sig) { 
-	char quitPromptString[255];
 
 	fflush(stdout);
 	fd_set readfds;
@@ -164,29 +189,25 @@ void signalHandler(int sig) {
 	printf("\nYou got %d out of %d items correctly.\n", playerScore, numberOfQuestions-1);
 	resetScores();
 	printf("\nPress y or Y if you want to finish the game. Press enter to start a new one.\n");
-	select(STDIN+1, &readfds, NULL, NULL, NULL);
 
-	if(FD_ISSET(STDIN, &readfds)) {
-		fgets(quitPromptString, 255, stdin);
-		if(checkQuitPrompt(quitPromptString)) {
-			tv.tv_sec = 3;
-			signal(SIGINT, signalHandler); 
+	if(checkQuitPrompt()) {
+		tv.tv_sec = 3;
+		signal(SIGINT, signalHandler); 
 
-			initiateRandomizer(); 
-			select(STDIN+1, &readfds, NULL, NULL, &tv);
+		initiateRandomizer(); 
+		select(STDIN+1, &readfds, NULL, NULL, &tv);
 
-			if(FD_ISSET(STDIN, &readfds)) {
-				fgets(userAnswerString, 255, stdin);
-				checkForBlankInput();
-			}
-			else {
-				printf("Incorrect: Timeout.\n");
-				repeatFlag = 1;
-				return;
-			}
-
+		if(FD_ISSET(STDIN, &readfds)) {
+			fgets(userAnswerString, 255, stdin);
+			checkForBlankInput();
+		}
+		else {
+			printf("Incorrect: Timeout.\n");
+			repeatFlag = 1;
+			return;
 		}
 	}
+	
 }
 
 void listenForInput() {
