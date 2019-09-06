@@ -41,3 +41,13 @@ echo " "
 echo "~~~FILE HANDLING PYTHON PROGRAM~~~"
 python3 file.py
 echo " "
+
+# fork and exec
+echo "~~~FORK AND EXEC C PROGRAM~~~"
+gcc fork_and_exec.c -Wall
+./a.out
+echo " "
+
+echo "~~~FORK AND EXEC PYTHON PROGRAM~~~"
+python3 fork_and_exec.py
+echo " "

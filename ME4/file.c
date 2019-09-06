@@ -13,7 +13,7 @@ void fileOpen() {
 
 void fileWrite() {
     printf("FWRITE starting...\n");
-    printf("Writing \"%s\" in file...\n", string);
+    printf("Writing \"%s\" in inputC.txt...\n", string);
     fwrite(string, 1, sizeof(string), filePointer);
     printf("FWRITE done!\n\n");
 }

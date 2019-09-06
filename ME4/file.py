@@ -7,7 +7,7 @@ def fileOpen():
 def fileWrite(filePointer):
 	string = "KIM CHAEWON BEST GIRL"
 	print("FWRITE starting...")
-	print("Writing \"" + string + "\" in file...")
+	print("Writing \"" + string + "\" in inputPY.txt...")
 	filePointer.write(string)
 	print("FWRITE done!\n")
 
