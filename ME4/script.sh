@@ -29,7 +29,17 @@ gcc calloc.c -Wall
 echo " "
 
 echo "~~~CALLOC PYTHON PROGRAM~~~"
-# python3 calloc.py
+python3 calloc.py
+echo " "
+
+# queue
+echo "~~~QUEUE USING ARRAY C PROGRAM~~~"
+gcc queue_array.c -Wall
+./a.out
+echo " "
+
+echo "~~~QUEUE USING ARRAY PYTHON PROGRAM~~~"
+python3 queue_array.py
 echo " "
 
 # file
