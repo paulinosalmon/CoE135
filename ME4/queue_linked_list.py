@@ -9,10 +9,10 @@ class Queue():
         self.tail = None
 
 def traversal(q):
-    temp = q.head #temporary pointer to point to head
+    temp = q.head 
 
     a = ''
-    while temp != None: #iterating over queue
+    while temp != None: 
         a = a+str(temp.data)+'\t'
         temp = temp.next
 
@@ -24,7 +24,7 @@ def is_empty(q):
     return False
 
 def enqueue(q, n):
-    if is_empty(q): #empty
+    if is_empty(q):
         q.head = n
         q.tail = n
     else:

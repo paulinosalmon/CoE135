@@ -11,7 +11,6 @@ typedef struct linked_list {
     struct node *tail;
 } queue;
 
-//to make new node
 node* new_node(int data) {
     node *z;
     z = malloc(sizeof(struct node));
@@ -21,7 +20,6 @@ node* new_node(int data) {
     return z;
 }
 
-//to make a new queue
 queue* new_queue() {
     queue *q = malloc(sizeof(queue));
     q->head = NULL;
@@ -31,9 +29,9 @@ queue* new_queue() {
 }
 
 void traversal(queue *q) {
-    node *temp = q->head; //temporary pointer to point to head
+    node *temp = q->head; 
 
-    while(temp != NULL) { //iterating over queue
+    while(temp != NULL) { 
         printf("%d\t", temp->data);
         temp = temp->next;
     }
