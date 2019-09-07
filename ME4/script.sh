@@ -42,6 +42,15 @@ echo "~~~QUEUE USING ARRAY PYTHON PROGRAM~~~"
 python3 queue_array.py
 echo " "
 
+echo "~~~QUEUE USING LINKED LIST C PROGRAM~~~"
+gcc queue_linked_list.c -Wall
+./a.out
+echo " "
+
+echo "~~~QUEUE USING LINKED LIST PYTHON PROGRAM~~~"
+python3 queue_linked_list.py
+echo " "
+
 # file
 echo "~~~FILE HANDLING C PROGRAM~~~"
 gcc file.c -Wall
