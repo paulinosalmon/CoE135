@@ -13,7 +13,7 @@ def traversal(q):
 
     a = ''
     while temp != None: 
-        a = a+str(temp.data)+'\t'
+        a = a + str(temp.data) + '\t'
         temp = temp.next
 
     print(a)  

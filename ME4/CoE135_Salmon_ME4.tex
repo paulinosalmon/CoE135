@@ -54,9 +54,19 @@ C is always drastically faster in general as compared to Python as Python is int
 \section{Do you need root permission when running strace on any program? Elaborate
 on your answer.}
 Root privileges are required in order to plant strace on \textbf{any running program}, especially the ones that you do not even own. A normal user can only attach strace on his owned processes.
-
 \section{FOR BONUS: show screenshots of the relevant parts of the communication
 between the two programs using FIFOs as indicated above.}
-
+\subsection{Getting the PIDs of the Processes}
+\begin{center}
+\includegraphics[width=9cm, height=5.5cm]{1.jpg}
+\end{center}
+\subsection{Catching the SIGINT Ctrl+C Signal}
+\begin{center}
+\includegraphics[width=9cm, height=5.5cm]{2.jpg}
+\end{center}
+\subsection{Catching the SIGTSTP Ctrl+Z Signal}
+\begin{center}
+\includegraphics[width=9cm, height=5.5cm]{3.jpg}
+\end{center}
 
 \end{document}
