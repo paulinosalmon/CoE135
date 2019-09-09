@@ -13,7 +13,7 @@ def traversal(q):
 
     a = ''
     while temp != None: 
-        a = a + str(temp.data) + '\t'
+        a = a + str(temp.data) + ' '
         temp = temp.next
 
     print(a)  
@@ -33,7 +33,7 @@ def enqueue(q, n):
 
 def dequeue(q):
     if is_empty(q):
-        print("Queue Underflow")
+        traversal(q)
         return -1000
     else:
         x = q.head.data
@@ -45,15 +45,18 @@ def dequeue(q):
 if __name__ == '__main__':
     q = Queue()
 
-    a = Node(10)
-    b = Node(20)
-    c = Node(30)
-
-    dequeue(q)
-    enqueue(q, a)
-    enqueue(q, b)
-    enqueue(q, c)
-
-    traversal(q)
-    dequeue(q)
-    traversal(q)
+    while(1):
+        choice = input("\nWhat do you want to do?\n1) Insert integer.\n2) Pop integer.\n3) Exit\n")
+        if(choice == "1"):
+            insertInt = input("Enter integer to insert: ")
+            a = Node(insertInt)
+            enqueue(q, a)
+            print("Inserted. Queue is now: ")
+            traversal(q)
+        elif(choice == "2"):
+            print("Popping first in queue...")
+            dequeue(q)
+            print("Popped. Queue is now:")
+            traversal(q)
+        else:
+            exit(0)

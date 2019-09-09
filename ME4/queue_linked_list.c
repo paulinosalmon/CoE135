@@ -32,7 +32,7 @@ void traversal(queue *q) {
     node *temp = q->head; 
 
     while(temp != NULL) { 
-        printf("%d\t", temp->data);
+        printf("%d ", temp->data);
         temp = temp->next;
     }
 
@@ -58,7 +58,7 @@ void enqueue(queue *q, node *n) {
 
 int dequeue(queue *q) {
     if(is_empty(q)) {
-        printf("Underflow\n");
+        traversal(q);
         return -1000;
     }
     else {
@@ -72,21 +72,33 @@ int dequeue(queue *q) {
 
 int main() {
     queue *q = new_queue();
+    int choice;
 
-    node *a, *b, *c;
-    a = new_node(10);
-    b = new_node(20);
-    c = new_node(30);
-
-    dequeue(q);
-    enqueue(q, a);
-    enqueue(q, b);
-    enqueue(q, c);
-
-    traversal(q);
-    dequeue(q);
-    traversal(q);
-
+    while(1) {
+        node* a;
+        int input;
+        printf("\nWhat do you want to do?\n1) Insert integer.\n2) Pop integer.\n3) Exit\n");
+        scanf("%d", &choice);
+        switch(choice) {
+            case 1: 
+                printf("Enter integer to insert: ");
+                scanf("%d", &input);
+                a = new_node(input);
+                enqueue(q, a);
+                printf("Inserted. Queue is now: \n");
+                traversal(q);
+                break;
+            case 2:
+                printf("Popping first in queue...\n");
+                dequeue(q);
+                printf("Popped. Queue is now:\n");
+                traversal(q);
+                break;
+            default:
+                exit(0);
+                break;
+        }
+    }
 
     return 0;
 }
