@@ -7,4 +7,4 @@ int main() {
    printf("Allocated the memory for 5 integers.\n");
    free(arr); 
    printf("Memory freed.\n");
-}   
+}  
