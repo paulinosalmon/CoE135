@@ -31,46 +31,56 @@ echo "~~~CALLOC C PROGRAM~~~"
 gcc calloc.c 
 strace ./a.out 2>&1 | grep -e mmap -e munmap
 echo " "
+read
 
 echo "~~~CALLOC PYTHON PROGRAM~~~"
 strace python3 calloc.py 2>&1 | grep -e mmap -e munmap
 echo " "
+read
 
-queue
+# queue
 echo "~~~QUEUE USING ARRAY C PROGRAM~~~"
 gcc queue_array.c -Wall
 strace ./a.out
 echo " "
+read
 
 echo "~~~QUEUE USING ARRAY PYTHON PROGRAM~~~"
 strace python3 queue_array.py
 echo " "
+read
 
 echo "~~~QUEUE USING LINKED LIST C PROGRAM~~~"
 gcc queue_linked_list.c -Wall
 strace ./a.out
 echo " "
+read
 
 echo "~~~QUEUE USING LINKED LIST PYTHON PROGRAM~~~"
 strace python3 queue_linked_list.py
 echo " "
+read
 
-file
+# file
 echo "~~~FILE HANDLING C PROGRAM~~~"
 gcc file.c -Wall
 strace ./a.out 2>&1 | grep -e open -e write -e read -e close
 echo " "
+read
 
 echo "~~~FILE HANDLING PYTHON PROGRAM~~~"
 strace python3 file.py 2>&1 | grep -e open -e write -e read -e close
 echo " "
+read
 
 # fork and exec
 echo "~~~FORK AND EXEC C PROGRAM~~~"
 gcc fork_and_exec.c -Wall
 strace ./a.out 2>&1 | grep -e clone -e execve
 echo " "
+read
 
 echo "~~~FORK AND EXEC PYTHON PROGRAM~~~"
 strace python3 fork_and_exec.py 2>&1 | grep -e clone -e execve
 echo " "
+read
