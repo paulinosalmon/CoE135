@@ -2,13 +2,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 #include <stdint.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
-const static uint32_t BLOCK_SIZE = 128;
-const static uint32_t MAXIMUM_INODE_BLOCKS = 8;
+// To solve for
+#define NUM_OF_PTRS 8
+#define NUM_OF_INODES_PER_INODE_BLOCK 8
+#define MAXIMUM_DATA_BLOCKS 16
+
+// Given
+#define BLOCK_SIZE 128
+#define MAXIMUM_INODE_BLOCKS 8
 
 typedef struct {
 	uint32_t valid;
@@ -21,26 +29,45 @@ typedef struct {
 	uint32_t block_nums[NUM_OF_PTRS];
 } indirect_block_t;
 
-// struct FileSystem {
+void w() {
 
-//     ssize_t create();
-//     bool    remove(size_t inumber);
-//     ssize_t stat(size_t inumber);
+}
 
-//     ssize_t read(size_t inumber, char *data, size_t length, size_t offset);
-//     ssize_t write(size_t inumber, char *data, size_t length, size_t offset);
-// };
+void r() {
+
+}
+
+void b() {
+
+}
+
+void d() {
+
+}
+
+void i() {
+
+}
 
 int main() {
 	char input[50];
 
 	while(1) {
-		printf("$ Enter a command: ");
+		printf("$ Enter a command: [w/r/b/d/i] ");
 		fgets(input, 50, stdin);
-		printf("\n$ Your input: %s\n", input);
+		if(!(strncmp(input, "w", 1)))
+			w();
+		else if(!(strncmp(input, "r", 1)))
+			r();
+		else if(!(strncmp(input, "b", 1)))
+			b();
+		else if(!(strncmp(input, "d", 1)))
+			d();
+		else if(!(strncmp(input, "i", 1)))
+			i();
+		else 
+			printf("Input invalid!\n");
 	}
-
-
 
 	return 0;
 }
