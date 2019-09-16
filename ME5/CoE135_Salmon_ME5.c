@@ -30,6 +30,26 @@ typedef struct {
 } indirect_block_t;
 
 void w() {
+	char ch[9999];
+	FILE *fileInput;
+	FILE *fileOutput;
+	char inputFileName[100];
+	char outputFileName[100] = "files/B1";
+
+	printf("$ Enter file name: ");
+	scanf("%s", inputFileName);
+	getchar();
+
+	fileInput = fopen(inputFileName, "rb");
+	fileOutput = fopen(outputFileName, "wb");
+
+	while(!feof(fileInput)) {
+		fread(ch, sizeof(ch), 1, fileInput);
+		fwrite(ch, sizeof(char), (strlen(ch)) + 1, fileOutput);
+	}
+
+	fclose(fileOutput);
+	fclose(fileInput);
 
 }
 
