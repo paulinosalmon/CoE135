@@ -1,24 +1,20 @@
-
 #include <stdlib.h>
 #include <stdio.h>
-#include <errno.h>
 #include <string.h>
 #include <stdint.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
 
 // To solve for
 #define NUM_OF_PTRS 8
 #define NUM_OF_INODES_PER_INODE_BLOCK 8
-#define MAXIMUM_DATA_BLOCKS 16
+#define MAXIMUM_DIRECT_DATA_BLOCKS 29
 
 // Given
 #define BLOCK_SIZE 128
 #define MAXIMUM_INODE_BLOCKS 8
 
-char blockCounter = 1;
+char blockCounter = 0;
+char bitmapForBlocks[30] = "11111111111111111111111111111";
 
 typedef struct {
 	uint32_t valid;
@@ -45,13 +41,20 @@ char* renameOutputFile() {
 	char blockCounterString[100];
 
 	strcpy(output, "files/B");
-	sprintf(blockCounterString, "%d", blockCounter);
+	sprintf(blockCounterString, "%d", blockCounter+1);
 	strcat(output, blockCounterString);
 	
 	return output;
 }
 
+inode_t* newInode() {
+	inode_t *inode = malloc(sizeof(inode_t));
+	inode->valid = 1;
+	return inode;
+}
+
 void w() {
+	blockCounter = 0;
 	FILE *fileInput;
 	FILE *fileOutput;
 	int fileSize;
@@ -61,6 +64,11 @@ void w() {
 	char inputFileName[100];
 	char outputFileName[100];
 	strcpy(outputFileName, renameOutputFile());
+
+	while(access(outputFileName, F_OK) != -1) {
+		blockCounter++;
+		strcpy(outputFileName, renameOutputFile());
+	}
 
 	printf("$ Enter file name: ");
 	scanf("%s", inputFileName);
@@ -108,6 +116,7 @@ void w() {
 	fclose(fileInput);
 }
 
+
 void r() {
 
 }
@@ -126,6 +135,15 @@ void i() {
 
 int main() {
 	char input[50];
+
+	inode_t *I0 = newInode();
+	inode_t *I1 = newInode();
+	inode_t *I2 = newInode();
+	inode_t *I3 = newInode();
+	inode_t *I4 = newInode();
+	inode_t *I5 = newInode();
+	inode_t *I6 = newInode();
+	inode_t *I7 = newInode();
 
 	while(1) {
 		printf("$ Enter a command: [w/r/b/d/i] ");
