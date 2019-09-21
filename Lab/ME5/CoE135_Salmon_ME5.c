@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <dirent.h> 
 
 // To solve for
 #define NUM_OF_PTRS 8
@@ -180,7 +181,24 @@ void d() {
 }
 
 void i() {
+	struct dirent *dStruct;  
+	DIR *directory = opendir("files"); 
 
+	if (directory == NULL) { 
+		printf("Could not open current directory.\n"); 
+		return;
+	}
+
+	int fileCount = 0;
+
+	while ((dStruct = readdir(directory)) != NULL) {
+		if(dStruct->d_name[0] == 'B')
+			fileCount++;
+	}
+
+	printf("Valid inode numbers: \n");
+	printf("Used data blocks: %d\n\n", fileCount);
+	closedir(directory);
 }
 
 int main() {
@@ -206,7 +224,7 @@ int main() {
 			b();
 		else if(!(strncmp(input, "d", 1)))
 			d();
-		else if(!(strncmp(input, "i", 1)))
+		else if(!(strncmp(input, "i", 1))) 
 			i();
 		else 
 			printf("Input invalid!\n");
