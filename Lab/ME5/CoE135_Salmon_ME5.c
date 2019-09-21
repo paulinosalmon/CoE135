@@ -18,7 +18,7 @@
 #define BLOCK_SIZE 128
 #define MAXIMUM_INODE_BLOCKS 8
 
-int blockCounter = 0;
+char blockCounter = 1;
 
 typedef struct {
 	uint32_t valid;
@@ -31,32 +31,79 @@ typedef struct {
 	uint32_t block_nums[NUM_OF_PTRS];
 } indirect_block_t;
 
+int getFileSize(FILE* fileInput) {
+	fseek(fileInput, 0L, SEEK_END);
+	return ftell(fileInput);
+}
+
+int getNumberOfBlocksNeededForFile(int fileSize) {
+	return ((fileSize/BLOCK_SIZE) + 1);
+}
+
+char* renameOutputFile() {
+	static char output[100];
+	char blockCounterString[100];
+
+	strcpy(output, "files/B");
+	sprintf(blockCounterString, "%d", blockCounter);
+	strcat(output, blockCounterString);
+	
+	return output;
+}
+
 void w() {
-	char ch[BLOCK_SIZE];
 	FILE *fileInput;
 	FILE *fileOutput;
+	int fileSize;
+	int numberOfBlocksNeeded;
+
+	char fileReader[BLOCK_SIZE];
 	char inputFileName[100];
-	char outputFileName[100] = "files/B1";
+	char outputFileName[100];
+	strcpy(outputFileName, renameOutputFile());
 
 	printf("$ Enter file name: ");
 	scanf("%s", inputFileName);
 	getchar();
 
 	fileInput = fopen(inputFileName, "rb");
+	fileSize = getFileSize(fileInput);
+	rewind(fileInput);
+	numberOfBlocksNeeded = getNumberOfBlocksNeededForFile(fileSize);
+
 	fileOutput = fopen(outputFileName, "wb");
 
-	int counter = 0;
+	int counter = 0, overallCounter = 0;
 
 	while(1) {
-		fread(&ch[counter], 1, 1, fileInput);
-		if(ch[counter] == '\0' || ((counter % 128 == 0) && (counter != 0))) {
-			fwrite(ch, counter - 1, 1, fileOutput);
+		fread(&fileReader[counter], 1, 1, fileInput);
+		printf("Counter at %d\n", counter);
+		printf("FILE READER: %s\n", fileReader);
+		counter++;
+		overallCounter++;
+
+		if(feof(fileInput)) {
+			fwrite(fileReader, counter - 1, 1, fileOutput);
 			fclose(fileOutput);
+			blockCounter = 0;
 			break;
 		}
-		counter++;
-	}
+		else if((counter % (BLOCK_SIZE) == 0) && (counter != 0)) {
+			fread(&fileReader[counter++], 1, 1, fileInput);
+			fwrite(fileReader, counter - 1, 1, fileOutput);
+			fclose(fileOutput);
 
+			// Reset values
+			memset(outputFileName, 0, 100);
+			memset(fileReader, 0, BLOCK_SIZE);
+			blockCounter++;
+			counter = 0;
+
+			strcpy(outputFileName, renameOutputFile());
+			fileOutput = fopen(outputFileName, "wb");
+			fseek(fileInput, overallCounter, SEEK_SET);
+		}	
+	}
 
 	fclose(fileInput);
 }
