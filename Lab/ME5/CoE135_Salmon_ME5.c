@@ -14,6 +14,7 @@
 #define MAXIMUM_INODE_BLOCKS 8
 
 char blockCounter = 0;
+char inodeCounter = 0;
 char bitmapForBlocks[30] = "11111111111111111111111111111";
 
 typedef struct {
@@ -47,6 +48,17 @@ char* renameOutputFile() {
 	return output;
 }
 
+char* renameInodeFile() {
+	static char output[100];
+	char inodeCounterString[100];
+
+	strcpy(output, "files/I");
+	sprintf(inodeCounterString, "%d", inodeCounter);
+	strcat(output, inodeCounterString);
+	
+	return output;
+}
+
 inode_t* newInode() {
 	inode_t *inode = malloc(sizeof(inode_t));
 	inode->valid = 1;
@@ -55,15 +67,13 @@ inode_t* newInode() {
 
 void w() {
 	blockCounter = 0;
-	FILE *fileInput;
-	FILE *fileOutput;
-	int fileSize;
-	int numberOfBlocksNeeded;
+	int fileSize, numberOfBlocksNeeded, pointerCounter = 0;
+	FILE *fileInput, *fileOutput;
 
-	char fileReader[BLOCK_SIZE];
-	char inputFileName[100];
-	char outputFileName[100];
+	char blocksForThisInode[30][100], fileReader[BLOCK_SIZE], inputFileName[100], outputFileName[100];
 	strcpy(outputFileName, renameOutputFile());
+	strcpy(blocksForThisInode[pointerCounter], outputFileName);
+	pointerCounter++;
 
 	while(access(outputFileName, F_OK) != -1) {
 		blockCounter++;
@@ -85,8 +95,6 @@ void w() {
 
 	while(1) {
 		fread(&fileReader[counter], 1, 1, fileInput);
-		printf("Counter at %d\n", counter);
-		printf("FILE READER: %s\n", fileReader);
 		counter++;
 		overallCounter++;
 
@@ -96,6 +104,7 @@ void w() {
 			blockCounter = 0;
 			break;
 		}
+
 		else if((counter % (BLOCK_SIZE) == 0) && (counter != 0)) {
 			fread(&fileReader[counter++], 1, 1, fileInput);
 			fwrite(fileReader, counter - 1, 1, fileOutput);
@@ -108,20 +117,61 @@ void w() {
 			counter = 0;
 
 			strcpy(outputFileName, renameOutputFile());
+			strcpy(blocksForThisInode[pointerCounter], outputFileName);
+			pointerCounter++;
 			fileOutput = fopen(outputFileName, "wb");
 			fseek(fileInput, overallCounter, SEEK_SET);
 		}	
 	}
 
 	fclose(fileInput);
+
+	char inodeFileName[100];
+	strcpy(inodeFileName, renameInodeFile());
+	while(access(inodeFileName, F_OK) != -1) {
+		inodeCounter++;
+		strcpy(inodeFileName, renameInodeFile());
+	}
+
+	// printf("Inode #%d is available!\n", inodeCounter);
+
+	// for(int i = 0; i < MAXIMUM_DIRECT_DATA_BLOCKS; i++) {
+	// 	for(int j = 0; j < 255; j++) {
+	// 		printf("%c", blocksForThisInode[i][j]);
+	// 	}
+	// 	printf("\n");
+	// }
+	// inodeOutput = fopen(inodeFileName, "wb");
+	// for (int *ip = &blocksForThisInode[0][0]; ip <= &blocksForThisInode[MAXIMUM_DIRECT_DATA_BLOCKS][255]; ip++)
+	// 	printf("%c", *ip);
+
 }
 
 
 void r() {
-
 }
 
 void b() {
+	int blockNumber;
+	char blockFileName[100], blockNumberString[100];
+	FILE *blockFile;
+	printf("$ Enter block number: ");
+	scanf("%d", &blockNumber);
+	getchar();
+
+	strcpy(blockFileName, "files/B");
+	sprintf(blockNumberString, "%d", blockNumber);
+	strcat(blockFileName, blockNumberString);
+
+	if(access(blockFileName, F_OK) != -1) {
+		char s;
+		blockFile = fopen(blockFileName, "r");
+		while((s = fgetc(blockFile)) != EOF) 
+			printf("%c",s);
+		printf("\n\n");
+	}
+	else 
+		printf("File does not exist!\n");
 
 }
 
@@ -136,14 +186,14 @@ void i() {
 int main() {
 	char input[50];
 
-	inode_t *I0 = newInode();
-	inode_t *I1 = newInode();
-	inode_t *I2 = newInode();
-	inode_t *I3 = newInode();
-	inode_t *I4 = newInode();
-	inode_t *I5 = newInode();
-	inode_t *I6 = newInode();
-	inode_t *I7 = newInode();
+	// inode_t *I0 = newInode();
+	// inode_t *I1 = newInode();
+	// inode_t *I2 = newInode();
+	// inode_t *I3 = newInode();
+	// inode_t *I4 = newInode();
+	// inode_t *I5 = newInode();
+	// inode_t *I6 = newInode();
+	// inode_t *I7 = newInode();
 
 	while(1) {
 		printf("$ Enter a command: [w/r/b/d/i] ");
