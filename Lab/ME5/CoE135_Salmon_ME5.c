@@ -45,6 +45,12 @@ char* renameOutputFile() {
 	strcpy(output, "files/B");
 	sprintf(blockCounterString, "%d", blockCounter+1);
 	strcat(output, blockCounterString);
+
+
+	while(access(output, F_OK) != -1) {
+		blockCounter++;
+		strcpy(output, renameOutputFile());
+	}
 	
 	return output;
 }
@@ -60,6 +66,14 @@ char* renameInodeFile() {
 	return output;
 }
 
+char *choppy(char *s) {
+    char *n = malloc(strlen(s ? s: "\n"));
+    if(s)
+        strcpy(n, s);
+    n[strlen(n) - 1] = '\0';
+    return n;
+}
+
 inode_t* newInode() {
 	inode_t *inode = malloc(sizeof(inode_t));
 	inode->valid = 1;
@@ -69,17 +83,30 @@ inode_t* newInode() {
 void w() {
 	blockCounter = 0;
 	int fileSize, numberOfBlocksNeeded, pointerCounter = 0;
-	FILE *fileInput, *fileOutput;
+	FILE *fileInput, *fileOutput, *inodeOutput;
+
+	//////////////////////////////////////////////////////////////////////
+
+	char inodeFileName[100];
+	strcpy(inodeFileName, renameInodeFile());
+	while(access(inodeFileName, F_OK) != -1) {
+		inodeCounter++;
+		strcpy(inodeFileName, renameInodeFile());
+	}
+
+	inodeOutput = fopen(inodeFileName, "wb");
+	printf("Inode #%d is available!\n", inodeCounter);
+
+	//////////////////////////////////////////////////////////////////////
 
 	char blocksForThisInode[30][100], fileReader[BLOCK_SIZE], inputFileName[100], outputFileName[100];
 	strcpy(outputFileName, renameOutputFile());
 	strcpy(blocksForThisInode[pointerCounter], outputFileName);
+	fprintf(inodeOutput, "%s\n", blocksForThisInode[pointerCounter]);
 	pointerCounter++;
 
-	while(access(outputFileName, F_OK) != -1) {
-		blockCounter++;
-		strcpy(outputFileName, renameOutputFile());
-	}
+	//////////////////////////////////////////////////////////////////////
+
 
 	printf("$ Enter file name: ");
 	scanf("%s", inputFileName);
@@ -93,6 +120,8 @@ void w() {
 	fileOutput = fopen(outputFileName, "wb");
 
 	int counter = 0, overallCounter = 0;
+
+	//////////////////////////////////////////////////////////////////////
 
 	while(1) {
 		fread(&fileReader[counter], 1, 1, fileInput);
@@ -119,6 +148,7 @@ void w() {
 
 			strcpy(outputFileName, renameOutputFile());
 			strcpy(blocksForThisInode[pointerCounter], outputFileName);
+			fprintf(inodeOutput, "%s\n", blocksForThisInode[pointerCounter]);
 			pointerCounter++;
 			fileOutput = fopen(outputFileName, "wb");
 			fseek(fileInput, overallCounter, SEEK_SET);
@@ -126,30 +156,58 @@ void w() {
 	}
 
 	fclose(fileInput);
-
-	char inodeFileName[100];
-	strcpy(inodeFileName, renameInodeFile());
-	while(access(inodeFileName, F_OK) != -1) {
-		inodeCounter++;
-		strcpy(inodeFileName, renameInodeFile());
-	}
-
-	// printf("Inode #%d is available!\n", inodeCounter);
-
-	// for(int i = 0; i < MAXIMUM_DIRECT_DATA_BLOCKS; i++) {
-	// 	for(int j = 0; j < 255; j++) {
-	// 		printf("%c", blocksForThisInode[i][j]);
-	// 	}
-	// 	printf("\n");
-	// }
-	// inodeOutput = fopen(inodeFileName, "wb");
-	// for (int *ip = &blocksForThisInode[0][0]; ip <= &blocksForThisInode[MAXIMUM_DIRECT_DATA_BLOCKS][255]; ip++)
-	// 	printf("%c", *ip);
+	fclose(inodeOutput);
 
 }
 
 
 void r() {
+	int inodeNumber;
+	printf("$ Enter inode number: ");
+	scanf("%d", &inodeNumber);
+	getchar();
+
+	char inodeNumberString[100];
+	char inodeFileName[100];
+
+	strcpy(inodeFileName, "files/I");
+	sprintf(inodeNumberString, "%d", inodeNumber);
+	strcat(inodeFileName, inodeNumberString);
+
+	FILE *inodeFile, *blockFile;
+	char s;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+	inodeFile = fopen(inodeFileName, "rb");
+
+	if(inodeFile == NULL) {
+		printf("Invalid inode number!\n");
+		return;
+	}
+
+	int counter = 0;
+	char blocksForThisInode[30][100];
+
+	while ((read = getline(&line, &len, inodeFile)) != -1) {
+		strcpy(blocksForThisInode[counter], line);
+		counter++;
+    }
+
+	fclose(inodeFile);
+
+    if(line)
+        free(line);
+
+    for(int i = 0; i < counter; i++) {
+    	char fileName[100];
+		strcpy(fileName, choppy(blocksForThisInode[i]));
+    	blockFile = fopen(fileName, "r");	
+		while((s = fgetc(blockFile)) != EOF) 
+			printf("%c",s);
+		fclose(blockFile);
+    }
 }
 
 void b() {
@@ -174,13 +232,38 @@ void b() {
 	else 
 		printf("File does not exist!\n");
 
+	fclose(blockFile);
+
 }
 
 void d() {
 
 }
 
-void i() {
+
+void i_inodeCount() {
+
+	struct dirent *dStruct;  
+	DIR *directory = opendir("files"); 
+
+	if (directory == NULL) { 
+		printf("Could not open current directory.\n"); 
+		return;
+	}
+
+	int inodeCount = 0;
+
+	while ((dStruct = readdir(directory)) != NULL) {
+		if(dStruct->d_name[0] == 'I')
+			inodeCount++;
+	}
+
+	printf("Valid inode numbers: %d\n", inodeCount);
+	closedir(directory);
+}
+
+void i_blockCount() {
+
 	struct dirent *dStruct;  
 	DIR *directory = opendir("files"); 
 
@@ -195,10 +278,13 @@ void i() {
 		if(dStruct->d_name[0] == 'B')
 			fileCount++;
 	}
-
-	printf("Valid inode numbers: \n");
 	printf("Used data blocks: %d\n\n", fileCount);
 	closedir(directory);
+}
+
+void i() {
+	i_inodeCount();
+	i_blockCount();
 }
 
 int main() {
@@ -224,7 +310,7 @@ int main() {
 			b();
 		else if(!(strncmp(input, "d", 1)))
 			d();
-		else if(!(strncmp(input, "i", 1))) 
+		else if(!(strncmp(input, "i", 1)))
 			i();
 		else 
 			printf("Input invalid!\n");
