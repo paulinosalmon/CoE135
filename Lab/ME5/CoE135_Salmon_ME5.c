@@ -16,7 +16,6 @@
 
 char blockCounter = 0;
 char inodeCounter = 0;
-char bitmapForBlocks[30] = "11111111111111111111111111111";
 char nonCorruptedBlocks[30][10];
 
 typedef struct {
@@ -158,10 +157,9 @@ void deleteAffectedBlocks(int counter) {
 	for(int i = 0; i < counter; i++) {
 		inodeFile = fopen(nonCorruptedBlocks[i], "rb");
 
-		if(inodeFile == NULL) {
-			// printf("Invalid inode number!\n\n");
+		if(inodeFile == NULL) 
 			return;
-		}
+		
 		
 		else {
 			while ((read = getline(&line, &len, inodeFile)) != -1) {
@@ -214,8 +212,6 @@ void w() {
 	int fileSize, numberOfBlocksNeeded, pointerCounter = 0;
 	FILE *fileInput, *fileOutput, *inodeOutput;
 
-	//////////////////////////////////////////////////////////////////////
-
 	char inodeFileName[100];
 	strcpy(inodeFileName, renameInodeFile());
 	while(access(inodeFileName, F_OK) != -1) {
@@ -225,15 +221,11 @@ void w() {
 
 	inodeOutput = fopen(inodeFileName, "wb");
 
-	//////////////////////////////////////////////////////////////////////
-
 	char blocksForThisInode[30][100], fileReader[BLOCK_SIZE], inputFileName[100], outputFileName[100];
 	strcpy(outputFileName, renameOutputFile());
 	strcpy(blocksForThisInode[pointerCounter], outputFileName);
 	fprintf(inodeOutput, "%s\n", blocksForThisInode[pointerCounter]);
 	pointerCounter++;
-
-	//////////////////////////////////////////////////////////////////////
 
 	printf("$ Enter file name: ");
 	scanf("%s", inputFileName);
@@ -256,8 +248,6 @@ void w() {
 	fileOutput = fopen(outputFileName, "wb");
 
 	int counter = 0, overallCounter = 0;
-
-	//////////////////////////////////////////////////////////////////////
 
 	while(1) {
 		fread(&fileReader[counter], 1, 1, fileInput);
@@ -303,7 +293,6 @@ void w() {
 	printf("File written with inode number %d\n\n", inodeCounter);
 
 }
-
 
 void r() {
 	deleteAffectedBlocks(checkCorruptedInode());
@@ -436,7 +425,6 @@ void d() {
 	printf("Inode number %d deleted.\n\n", inodeNumber);
 }
 
-
 void i_inodeCount() {
 
 	struct dirent *dStruct;  
@@ -486,15 +474,6 @@ void i() {
 
 int main() {
 	char input[50];
-
-	// inode_t *I0 = newInode();
-	// inode_t *I1 = newInode();
-	// inode_t *I2 = newInode();
-	// inode_t *I3 = newInode();
-	// inode_t *I4 = newInode();
-	// inode_t *I5 = newInode();
-	// inode_t *I6 = newInode();
-	// inode_t *I7 = newInode();
 
 	while(1) {
 		blockCounter = 0;
