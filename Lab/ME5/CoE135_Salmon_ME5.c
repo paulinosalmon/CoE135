@@ -17,6 +17,7 @@
 char blockCounter = 0;
 char inodeCounter = 0;
 char bitmapForBlocks[30] = "11111111111111111111111111111";
+char nonCorruptedBlocks[30][10];
 
 typedef struct {
 	uint32_t valid;
@@ -74,6 +75,136 @@ char *choppy(char *s) {
     return n;
 }
 
+int checkMaximumMemory(int numberOfBlocksNeeded) {
+
+	struct dirent *dStruct;  
+	DIR *directory = opendir("files"); 
+
+	if (directory == NULL) { 
+		printf("Could not open current directory.\n"); 
+		return 0;
+	}
+
+	int fileCount = 0;
+
+	while ((dStruct = readdir(directory)) != NULL) {
+		if(dStruct->d_name[0] == 'B')
+			fileCount++;
+	}
+
+	closedir(directory);
+
+	if((MAXIMUM_DIRECT_DATA_BLOCKS - fileCount) < numberOfBlocksNeeded) {
+		printf("Not enough memory left!\n\n");
+		return 1;
+	}
+	else 
+		return 0;
+
+}
+
+
+int checkCorruptedInode() {
+
+	struct dirent *dStruct;  
+	DIR *directory = opendir("files"); 
+
+	if (directory == NULL) { 
+		printf("Could not open current directory.\n"); 
+		exit(1);
+	}
+
+	int counter = 0;
+	char inodeFileName[20];
+
+	while ((dStruct = readdir(directory)) != NULL) {
+		if(dStruct->d_name[0] == 'I') {
+			char *str = "files/I";
+			char c = dStruct->d_name[1];
+
+			size_t len = strlen(inodeFileName);
+			char *str2 = malloc(len + 1 + 1);
+			strcpy(str2, str);
+			str2[len] = c;
+			str2[len + 1] = '\0';
+
+			char string[50] = "files/I";
+			strcat(string, str2);
+			strcpy(nonCorruptedBlocks[counter], string);
+			counter++;
+		}
+	}
+
+	closedir(directory);
+
+	return counter;
+
+}
+
+void deleteAffectedBlocks(int counter) {
+
+	struct dirent *dStruct;  
+	DIR *directory = opendir("files"); 
+
+	if (directory == NULL) { 
+		printf("Could not open current directory.\n"); 
+		return;
+	}
+	
+	FILE* inodeFile;
+	char blocksForThisInode[30][100];
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    int numberOfBlocks = 0;
+
+	for(int i = 0; i < counter; i++) {
+		inodeFile = fopen(nonCorruptedBlocks[i], "rb");
+
+		if(inodeFile == NULL) {
+			printf("Invalid inode number!\n\n");
+			return;
+		}
+		
+		else {
+			while ((read = getline(&line, &len, inodeFile)) != -1) {
+				strcpy(blocksForThisInode[numberOfBlocks], choppy(line));
+				numberOfBlocks++;
+		    }
+			fclose(inodeFile);
+		}
+
+	    if(line)
+	        free(line);
+
+	}
+
+	int safeFlag = 0;
+
+	while ((dStruct = readdir(directory)) != NULL) {
+		if(dStruct->d_name[0] == 'B') {
+
+			for(int i = 0; i < numberOfBlocks; i++) {
+				int len = strlen(blocksForThisInode[i]);
+				const char *blockNumber = &blocksForThisInode[i][len-2];
+				if(!(strcmp(blockNumber, dStruct->d_name))) 
+					safeFlag = 1;
+				
+			}
+
+			char prefix[10] = "files/";
+			if(!safeFlag) 
+				remove(strcat(prefix, dStruct->d_name));
+			safeFlag = 0;
+		}
+
+	}
+
+	closedir(directory);
+
+
+}
+
 inode_t* newInode() {
 	inode_t *inode = malloc(sizeof(inode_t));
 	inode->valid = 1;
@@ -95,7 +226,6 @@ void w() {
 	}
 
 	inodeOutput = fopen(inodeFileName, "wb");
-	printf("Inode #%d is available!\n", inodeCounter);
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -107,15 +237,23 @@ void w() {
 
 	//////////////////////////////////////////////////////////////////////
 
-
 	printf("$ Enter file name: ");
 	scanf("%s", inputFileName);
 	getchar();
 
 	fileInput = fopen(inputFileName, "rb");
+	if(fileInput == NULL) {
+		printf("File doesn't exist!\n");
+		remove(inodeFileName);
+		return;
+	}
+
 	fileSize = getFileSize(fileInput);
 	rewind(fileInput);
 	numberOfBlocksNeeded = getNumberOfBlocksNeededForFile(fileSize);
+	if(checkMaximumMemory(numberOfBlocksNeeded)) {
+		return;
+	}
 
 	fileOutput = fopen(outputFileName, "wb");
 
@@ -158,6 +296,11 @@ void w() {
 	fclose(fileInput);
 	fclose(inodeOutput);
 
+	for(int i = 0; i < pointerCounter; i++) {
+		printf("Wrote to %s\n", blocksForThisInode[i]);
+	}
+	printf("File written with inode number %d\n\n", inodeCounter);
+
 }
 
 
@@ -183,7 +326,7 @@ void r() {
 	inodeFile = fopen(inodeFileName, "rb");
 
 	if(inodeFile == NULL) {
-		printf("Invalid inode number!\n");
+		printf("Invalid inode number!\n\n");
 		return;
 	}
 
@@ -203,10 +346,15 @@ void r() {
     for(int i = 0; i < counter; i++) {
     	char fileName[100];
 		strcpy(fileName, choppy(blocksForThisInode[i]));
-    	blockFile = fopen(fileName, "r");	
-		while((s = fgetc(blockFile)) != EOF) 
+    	blockFile = fopen(fileName, "r");
+    	if(blockFile == NULL) 
+    		printf("[<CORRUPTED> Could not locate file: %s]\n", fileName);
+    		
+		else {
+			while((s = fgetc(blockFile)) != EOF) 
 			printf("%c",s);
-		fclose(blockFile);
+			fclose(blockFile);
+		}
     }
 }
 
@@ -228,16 +376,61 @@ void b() {
 		while((s = fgetc(blockFile)) != EOF) 
 			printf("%c",s);
 		printf("\n\n");
+		fclose(blockFile);
 	}
 	else 
-		printf("File does not exist!\n");
+		printf("File does not exist!\n\n");
 
-	fclose(blockFile);
 
 }
 
 void d() {
+	int inodeNumber;
+	printf("$ Enter inode number: ");
+	scanf("%d", &inodeNumber);
+	getchar();
 
+	char inodeNumberString[100];
+	char inodeFileName[100];
+
+	strcpy(inodeFileName, "files/I");
+	sprintf(inodeNumberString, "%d", inodeNumber);
+	strcat(inodeFileName, inodeNumberString);
+
+	FILE *inodeFile;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+	inodeFile = fopen(inodeFileName, "rb");
+
+	if(inodeFile == NULL) {
+		printf("Invalid inode number!\n\n");
+		return;
+	}
+
+	int counter = 0;
+	char blocksForThisInode[30][100];
+
+	while ((read = getline(&line, &len, inodeFile)) != -1) {
+		strcpy(blocksForThisInode[counter], line);
+		counter++;
+    }
+
+	fclose(inodeFile);
+
+    if(line)
+        free(line);
+
+    remove(inodeFileName);
+
+    for(int i = 0; i < counter; i++) {
+    	char fileName[100];
+		strcpy(fileName, choppy(blocksForThisInode[i]));
+    	remove(fileName);
+    }
+
+	printf("Inode number %d deleted.\n\n", inodeNumber);
 }
 
 
@@ -289,6 +482,8 @@ void i() {
 
 int main() {
 	char input[50];
+
+	// deleteAffectedBlocks(checkCorruptedInode());
 
 	// inode_t *I0 = newInode();
 	// inode_t *I1 = newInode();
