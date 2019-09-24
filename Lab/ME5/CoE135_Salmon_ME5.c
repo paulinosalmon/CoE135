@@ -4,11 +4,14 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <dirent.h> 
+#include <sys/types.h>
+#include <sys/param.h>
+#include <sys/stat.h>
 
 // To solve for
-#define NUM_OF_PTRS 8
-#define NUM_OF_INODES_PER_INODE_BLOCK 8
-#define MAXIMUM_DIRECT_DATA_BLOCKS 29
+#define NUM_OF_PTRS 256
+#define NUM_OF_INODES_PER_INODE_BLOCK 4
+#define MAXIMUM_DIRECT_DATA_BLOCKS 160
 
 // Given
 #define BLOCK_SIZE 128
@@ -87,13 +90,13 @@ int checkMaximumMemory(int numberOfBlocksNeeded) {
 	int fileCount = 0;
 
 	while ((dStruct = readdir(directory)) != NULL) {
-		if(dStruct->d_name[0] == 'B')
+		if(dStruct->d_name[0] == 'I')
 			fileCount++;
 	}
 
 	closedir(directory);
 
-	if((MAXIMUM_DIRECT_DATA_BLOCKS - fileCount) < numberOfBlocksNeeded) {
+	if(numberOfBlocksNeeded > 5 || fileCount == 32+1) {
 		printf("Not enough memory left!\n\n");
 		return 1;
 	}
@@ -169,8 +172,8 @@ void deleteAffectedBlocks(int counter) {
 			fclose(inodeFile);
 		}
 
-	    if(line)
-	        free(line);
+	    // if(line)
+	    //     free(line);
 
 	}
 
@@ -207,7 +210,7 @@ inode_t* newInode() {
 }
 
 void w() {
-	deleteAffectedBlocks(checkCorruptedInode());
+	// deleteAffectedBlocks(checkCorruptedInode());
 	blockCounter = 0;
 	int fileSize, numberOfBlocksNeeded, pointerCounter = 0;
 	FILE *fileInput, *fileOutput, *inodeOutput;
@@ -242,6 +245,7 @@ void w() {
 	rewind(fileInput);
 	numberOfBlocksNeeded = getNumberOfBlocksNeededForFile(fileSize);
 	if(checkMaximumMemory(numberOfBlocksNeeded)) {
+		remove(inodeFileName);
 		return;
 	}
 
@@ -281,7 +285,7 @@ void w() {
 		}	
 	}
 
-	fseek(inodeOutput, 127, SEEK_SET);
+	fseek(inodeOutput, 27, SEEK_SET);
     fputc('\0', inodeOutput);
 
 	fclose(fileInput);
@@ -291,11 +295,12 @@ void w() {
 		printf("Wrote to %s\n", blocksForThisInode[i]);
 	}
 	printf("File written with inode number %d\n\n", inodeCounter);
+	inodeCounter = 0;
 
 }
 
 void r() {
-	deleteAffectedBlocks(checkCorruptedInode());
+	// deleteAffectedBlocks(checkCorruptedInode());
 	int inodeNumber;
 	printf("$ Enter inode number: ");
 	scanf("%d", &inodeNumber);
@@ -350,7 +355,7 @@ void r() {
 }
 
 void b() {
-	deleteAffectedBlocks(checkCorruptedInode());
+	// deleteAffectedBlocks(checkCorruptedInode());
 	int blockNumber;
 	char blockFileName[100], blockNumberString[100];
 	FILE *blockFile;
@@ -376,7 +381,7 @@ void b() {
 }
 
 void d() {
-	deleteAffectedBlocks(checkCorruptedInode());
+	// deleteAffectedBlocks(checkCorruptedInode());
 	int inodeNumber;
 	printf("$ Enter inode number: ");
 	scanf("%d", &inodeNumber);
@@ -467,14 +472,28 @@ void i_blockCount() {
 }
 
 void i() {
-	deleteAffectedBlocks(checkCorruptedInode());
+	// deleteAffectedBlocks(checkCorruptedInode());
 	i_inodeCount();
 	i_blockCount();
 }
 
+// void initializeInodeBlocks() {
+// 	FILE* inodeBlockName;
+
+// 	char array[10] = {'0', '1', '2', '3', '4', '5', '6', '7'};
+
+// 	for(int i = 0; i < 8; i++) {
+// 		inodeBlockName = fopen(array[i], "w");
+// 		write(inodeBlockName, "", 1);
+// 		fclose(array[i]);
+// 		// printf("%c ", array[i]);
+// 	}
+// }
+
 int main() {
 	char input[50];
-
+	// initializeInodeBlocks();
+	deleteAffectedBlocks(checkCorruptedInode());
 	while(1) {
 		blockCounter = 0;
 		inodeCounter = 0;
