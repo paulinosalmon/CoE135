@@ -171,10 +171,6 @@ void deleteAffectedBlocks(int counter) {
 		    }
 			fclose(inodeFile);
 		}
-
-	    // if(line)
-	    //     free(line);
-
 	}
 
 	int safeFlag = 0;
@@ -210,7 +206,6 @@ inode_t* newInode() {
 }
 
 void w() {
-	// deleteAffectedBlocks(checkCorruptedInode());
 	blockCounter = 0;
 	int fileSize, numberOfBlocksNeeded, pointerCounter = 0;
 	FILE *fileInput, *fileOutput, *inodeOutput;
@@ -300,7 +295,6 @@ void w() {
 }
 
 void r() {
-	// deleteAffectedBlocks(checkCorruptedInode());
 	int inodeNumber;
 	printf("$ Enter inode number: ");
 	scanf("%d", &inodeNumber);
@@ -355,7 +349,6 @@ void r() {
 }
 
 void b() {
-	// deleteAffectedBlocks(checkCorruptedInode());
 	int blockNumber;
 	char blockFileName[100], blockNumberString[100];
 	FILE *blockFile;
@@ -381,7 +374,6 @@ void b() {
 }
 
 void d() {
-	// deleteAffectedBlocks(checkCorruptedInode());
 	int inodeNumber;
 	printf("$ Enter inode number: ");
 	scanf("%d", &inodeNumber);
@@ -472,28 +464,15 @@ void i_blockCount() {
 }
 
 void i() {
-	// deleteAffectedBlocks(checkCorruptedInode());
 	i_inodeCount();
 	i_blockCount();
 }
 
-// void initializeInodeBlocks() {
-// 	FILE* inodeBlockName;
-
-// 	char array[10] = {'0', '1', '2', '3', '4', '5', '6', '7'};
-
-// 	for(int i = 0; i < 8; i++) {
-// 		inodeBlockName = fopen(array[i], "w");
-// 		write(inodeBlockName, "", 1);
-// 		fclose(array[i]);
-// 		// printf("%c ", array[i]);
-// 	}
-// }
 
 int main() {
 	char input[50];
-	// initializeInodeBlocks();
 	deleteAffectedBlocks(checkCorruptedInode());
+	
 	while(1) {
 		blockCounter = 0;
 		inodeCounter = 0;
