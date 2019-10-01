@@ -2,7 +2,7 @@
 Name: 		Paulino I. Salmon III
 SN: 		2015-11557
 Section: 	HLMTRU
-Refereces: 	
+References: 	
 https://github.com/torvalds/linux/blob/master/arch/nios2/kernel/cpuinfo.c
 https://code.woboq.org/linux/linux/arch/x86/include/asm/processor.h.html#cpuinfo_x86
 */
