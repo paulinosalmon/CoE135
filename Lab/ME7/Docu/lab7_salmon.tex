@@ -8,12 +8,11 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{url}
-% \usepackage[style=ieee,backend=biber]{biblatex}
+\usepackage[style=ieee,backend=biber]{biblatex}
 \usepackage{float}
 \usepackage[T1]{fontenc}
 \usepackage[scaled]{beramono}
-
-% \addbibresource{ref.bib}
+\addbibresource{ref.bib}
 
 \usepackage{color}
 \definecolor{bluekeywords}{rgb}{0.13,0.13,1}
@@ -62,12 +61,12 @@ for(i = 0; i < 255; i++) {
 \end{lstlisting}
 \tab Running this kernel module in \textit{dmesg}, it shows that the allocated bytes of memory are \textbf{not always} in powers of two (See 96 bytes and 192 bytes below).
 \begin{center}
-	\includegraphics[width=8.5cm, height=4.5cm]{memory1.jpg}
+	\includegraphics[width=8.5cm, height=4.5cm]{memory1.JPG}
 \end{center}
 \begin{center}
-	\includegraphics[width=8.5cm, height=4.5cm]{memory2.jpg}
+	\includegraphics[width=8.5cm, height=4.5cm]{memory2.JPG}
 \end{center}
-\tab Page sizes are normally in powers of two, but the system allocates usually a little bit more than what is asked for as according to \textbf{TEXTCITE []}. \\
+\tab Page sizes are normally in powers of two, but the system allocates usually a little bit more than what is asked for as according to Stack Overflow User \textcite{kmalloc}. \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -79,7 +78,7 @@ for(i = 0; i < 255; i++) {
 printk(KERN_INFO "Minimum size is: %d bytes.\n", KMALLOC_MIN_SIZE);
 	\end{lstlisting}
 	\begin{center}
-		\includegraphics[width=8.5cm, height=0.3cm]{memory3.jpg}
+		\includegraphics[width=8.5cm, height=0.3cm]{memory3.JPG}
 	\end{center}
 \tab Terminal output shows that the minimum amount of memory kmalloc() can provide is \textbf{8 bytes}. This KMALLOC\_MIN\_SIZE constant is defined in the slab.h header. \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -92,13 +91,13 @@ printk(KERN_INFO "Minimum size is: %d bytes.\n", KMALLOC_MIN_SIZE);
 printk(KERN_INFO "Maximum size is: %ld bytes.\n", KMALLOC_MAX_SIZE);
 \end{lstlisting}
 \begin{center}
-	\includegraphics[width=8.5cm, height=0.3cm]{memory4.jpg}
+	\includegraphics[width=8.5cm, height=0.3cm]{memory4.JPG}
 \end{center}
 \tab Terminal output shows that the minimum amount of memory kmalloc() can provide is \textbf{4194304 bytes}. This KMALLOC\_MAX\_SIZE constant is defined in the slab.h header. \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \item Is the memory given to you by kmalloc() physically contiguous? \\
-\tab As per stack overflow users number1 and number2, the kmalloc() function guarantees that the pages are both physically and virtually contiguous, although, contiguity for kmalloc() may fail if the order of allocation is already very high.
+\tab As per Stack Overflow Users \textcite{kmallocvsvmalloc}, the kmalloc() function guarantees that the pages are both physically and virtually contiguous, although, contiguity for kmalloc() may fail if the order of allocation is already very high.
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -112,7 +111,7 @@ printk(KERN_INFO "Maximum size is: %ld bytes.\n", KMALLOC_MAX_SIZE);
 printk(KERN_INFO "Page size is: %ld bytes.\n", PAGE_SIZE);
 \end{lstlisting}
 \begin{center}
-	\includegraphics[width=8.5cm, height=0.3cm]{memory5.jpg}
+	\includegraphics[width=8cm, height=0.3cm]{memory5.JPG}
 \end{center}
 \tab Terminal output shows that the value of the page size is \textbf{4096 bytes}. This PAGE\_SIZE constant is also already defined in one of the linux headers. \\
 
@@ -124,19 +123,19 @@ architecture used by your machine when answering this problem.
 \tab Invoking the \textit{hostnamectl} terminal command, it shows that my system is of the 64-bit architecture.
 
 \begin{center}
-	\includegraphics[width=8.5cm, height=3cm]{memory6.jpg}
+	\includegraphics[width=8cm, height=3cm]{memory6.JPG}
 \end{center}
 
-\tab 64-bit processors can directly access $2^{64}$ bytes of memory. As per user Josh Kelly, the linux kernel splits these into the high memory (user space) and the low memory (kernel space). Compared to 32-bit machines in which the high memory address range starts at 0x00000000, high memory does not exist for 64-bit machines as it can access a huge memory of 16 EB, theoretically giving anyone more RAM than they ever need in the entire history of computing. \\
+\tab 64-bit processors can directly access $2^{64}$ bytes of memory. As per Users \textcite{highmem}, the linux kernel splits these into the high memory (user space) and the low memory (kernel space). Compared to 32-bit machines in which the high memory address range starts at 0x00000000, high memory does not exist for 64-bit machines as it can access a huge memory of 16 EB, theoretically giving anyone more RAM than they ever need in the entire history of computing. \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 \item Determine if the memory given by vmalloc() is physically contiguous per page, and if
 the memory given by vmalloc() is physically contiguous overall. 
 
-\tab As per Aliaksei Ramanau, vmalloc() allocates memory that is virtually contiguous but not necessarily physically contiguous overall.
+\tab As per \textcite{kmallocvsvmalloc}, vmalloc() allocates memory that is virtually contiguous but not necessarily physically contiguous overall.
 \begin{center}
-	\includegraphics[width=8.5cm, height=6cm]{memory7.jpg}
+	\includegraphics[width=8.5cm, height=6cm]{memory7.JPG}
 \end{center}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
@@ -146,5 +145,5 @@ a physical memory address.
 \tab A memory allocated by vmalloc() has a virtual address, but this may not be necessarily mapped directly to a physical address. The vmalloc() function only allocates contiguous virtual memory. This entire chuck may be fragmented when it comes to physical memory address translation, as show in the previous image.
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\printbibliography
 \end{document}

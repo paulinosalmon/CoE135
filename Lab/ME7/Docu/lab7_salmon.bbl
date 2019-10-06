@@ -1,0 +1,118 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{kmalloc}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=1b83d5da74032b6a750ef12210642eea}{%
+           family={Mike},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{1b83d5da74032b6a750ef12210642eea}
+      \strng{fullhash}{1b83d5da74032b6a750ef12210642eea}
+      \strng{bibnamehash}{1b83d5da74032b6a750ef12210642eea}
+      \strng{authorbibnamehash}{1b83d5da74032b6a750ef12210642eea}
+      \strng{authornamehash}{1b83d5da74032b6a750ef12210642eea}
+      \strng{authorfullhash}{1b83d5da74032b6a750ef12210642eea}
+      \field{sortinit}{1}
+      \field{sortinithash}{2174f786c6195e7fe2ee1c229b416e29}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Stack Overflow}
+      \field{note}{Accessed 2019-10-06}
+      \field{title}{KMALLOC size allocation}
+      \field{year}{2012}
+      \verb{urlraw}
+      \verb https://stackoverflow.com/questions/12568379/kmalloc-size-allocation?fbclid=IwAR1QXv8vtqbtHleLXhgQdwAfSUZgQ8RhoKJuqfOT1Tkg5CbgqWnY_N8k14M
+      \endverb
+      \verb{url}
+      \verb https://stackoverflow.com/questions/12568379/kmalloc-size-allocation?fbclid=IwAR1QXv8vtqbtHleLXhgQdwAfSUZgQ8RhoKJuqfOT1Tkg5CbgqWnY_N8k14M
+      \endverb
+    \endentry
+    \entry{kmallocvsvmalloc}{misc}{}
+      \name{author}{2}{}{%
+        {{hash=260db4ca95f65c11acbaa25a4525efec}{%
+           family={Ramanau},
+           familyi={R\bibinitperiod},
+           given={Aliaksei},
+           giveni={A\bibinitperiod}}}%
+        {{hash=1fcca22f9618c6ae1625a72d5d754709}{%
+           family={Yogeesh},
+           familyi={Y\bibinitperiod},
+           given={H.T},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{042e37dcf7f5bc73d7d58a71c17ba461}
+      \strng{fullhash}{042e37dcf7f5bc73d7d58a71c17ba461}
+      \strng{bibnamehash}{042e37dcf7f5bc73d7d58a71c17ba461}
+      \strng{authorbibnamehash}{042e37dcf7f5bc73d7d58a71c17ba461}
+      \strng{authornamehash}{042e37dcf7f5bc73d7d58a71c17ba461}
+      \strng{authorfullhash}{042e37dcf7f5bc73d7d58a71c17ba461}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Stack Overflow}
+      \field{note}{Accessed 2019-10-06}
+      \field{title}{What is the difference between vmalloc and kmalloc?}
+      \field{year}{2017}
+      \verb{urlraw}
+      \verb https://stackoverflow.com/questions/116343/what-is-the-difference-between-vmalloc-and-kmalloc?fbclid=IwAR16xnfAl1nFXua_0xKJeKPF885j0tzpfngXanSjavOQ6eZZvUzKjaHGyE8
+      \endverb
+      \verb{url}
+      \verb https://stackoverflow.com/questions/116343/what-is-the-difference-between-vmalloc-and-kmalloc?fbclid=IwAR16xnfAl1nFXua_0xKJeKPF885j0tzpfngXanSjavOQ6eZZvUzKjaHGyE8
+      \endverb
+    \endentry
+    \entry{highmem}{misc}{}
+      \name{author}{2}{}{%
+        {{hash=21c311318427eec6956efd45c23aed9f}{%
+           family={Kelley},
+           familyi={K\bibinitperiod},
+           given={Josh},
+           giveni={J\bibinitperiod}}}%
+        {{hash=6f025eaf376c4a6a2ec6a9f08bc2284c}{%
+           family={wag},
+           familyi={w\bibinitperiod}}}%
+      }
+      \strng{namehash}{90caf41a7ab6ec1523c112700743886f}
+      \strng{fullhash}{90caf41a7ab6ec1523c112700743886f}
+      \strng{bibnamehash}{90caf41a7ab6ec1523c112700743886f}
+      \strng{authorbibnamehash}{90caf41a7ab6ec1523c112700743886f}
+      \strng{authornamehash}{90caf41a7ab6ec1523c112700743886f}
+      \strng{authorfullhash}{90caf41a7ab6ec1523c112700743886f}
+      \field{sortinit}{5}
+      \field{sortinithash}{3c19c3776b658b3558e9e2e4840c01e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Stack Exchange}
+      \field{note}{Accessed 2019-10-06}
+      \field{title}{What are high memory and low memory on Linux?}
+      \field{year}{2015}
+      \verb{urlraw}
+      \verb https://unix.stackexchange.com/questions/4929/what-are-high-memory-and-low-memory-on-linux
+      \endverb
+      \verb{url}
+      \verb https://unix.stackexchange.com/questions/4929/what-are-high-memory-and-low-memory-on-linux
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
