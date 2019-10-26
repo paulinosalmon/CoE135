@@ -22,19 +22,29 @@ struct memory {
 }; 
   
 struct memory* shmptr; 
+char buyer_ID[50], price[100];
   
 void handler(int signum) {  
     if (signum == SIGUSR1) {
     }
+    // Counter offering communication
     else if (signum == SIGUSR2) {
         printf("\nCounteroffer: "); 
         puts(shmptr->buff); 
 
-        sleep(1);   
+        // sleep(1);   
         printf("Offer: "); 
         fgets(shmptr->buff, 96, stdin); 
+        strcpy(price, shmptr->buff);
         shmptr->status = Ready; 
         kill(shmptr->pid2, SIGUSR2); 
+
+        sleep(1);
+        strcpy(shmptr->buff, "Item ");
+        strcat(shmptr->buff, buyer_ID);
+        strcat(shmptr->buff, ": Offer ");
+        strcat(shmptr->buff, price);
+        kill(shmptr->pid3, SIGUSR1); 
     }
 } 
 
@@ -60,7 +70,7 @@ char* connectionConfirmed(char argv[]) {
 int main(int argc, char **argv) {
 
 	int pid = getpid();
-	char* buyer_ID = argv[1];
+	strcpy(buyer_ID, argv[1]);
 
 	checkArgs(argc, buyer_ID);
 
@@ -78,11 +88,19 @@ int main(int argc, char **argv) {
     kill(shmptr->pid3, SIGUSR1); 
     kill(shmptr->pid2, SIGUSR1); 
 
-    sleep(1);   
+    // sleep(1);   
     printf("\nOffer: "); 
     fgets(shmptr->buff, 96, stdin); 
+    strcpy(price, shmptr->buff);
     shmptr->status = Ready; 
     kill(shmptr->pid2, SIGUSR2); 
+
+    sleep(1);
+    strcpy(shmptr->buff, "Item ");
+    strcat(shmptr->buff, buyer_ID);
+    strcat(shmptr->buff, ": Offer ");
+    strcat(shmptr->buff, price);
+    kill(shmptr->pid3, SIGUSR1); 
 
     while (1) {      
   

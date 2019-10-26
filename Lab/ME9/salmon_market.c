@@ -24,8 +24,13 @@ struct memory {
 struct memory* shmptr; 
 
 void handler(int signum) {
+	// Initial Message/Logs
     if (signum == SIGUSR1) 
 		puts(shmptr->buff); 
+	// Logs
+	else if (signum == SIGUSR2) {
+
+	}
 } 
 
 int main() {
@@ -47,7 +52,7 @@ int main() {
     while(1) {
         while (shmptr->status != Ready) 
             continue; 
-        sleep(1); 
+        // sleep(1); 
   
         shmptr->status = FILLED; 
 	}

@@ -22,19 +22,30 @@ struct memory {
 }; 
   
 struct memory* shmptr; 
+char seller_ID[50], price[100];
   
 void handler(int signum) {
     if (signum == SIGUSR1) {
+        // add start flag to negate this if sigusr1 is needed again
         printf("Buyer connected.\n");
     } 
+    // Counter offering communication
     else if (signum == SIGUSR2) {
         printf("\nOffer: "); 
         puts(shmptr->buff); 
         printf("Counteroffer: "); 
-        sleep(1); 
+        // sleep(1); 
         fgets(shmptr->buff, 96, stdin); 
+        strcpy(price, shmptr->buff);
         shmptr->status = FILLED; 
         kill(shmptr->pid1, SIGUSR2); 
+
+        sleep(1);
+        strcpy(shmptr->buff, "Item ");
+        strcat(shmptr->buff, seller_ID);
+        strcat(shmptr->buff, ": Counteroffer ");
+        strcat(shmptr->buff, price);
+        kill(shmptr->pid3, SIGUSR1); 
     }
 } 
 
@@ -58,8 +69,9 @@ char* connectionConfirmed(char argv[]) {
 
 int main(int argc, char **argv) {
 
-	int pid = getpid();
-	char* seller_ID = argv[1];
+	int pid = getpid(); 
+    strcpy(seller_ID , argv[1]);
+    char* price[100];
 
 	checkArgs(argc, seller_ID);
 
