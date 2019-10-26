@@ -30,6 +30,8 @@ void handler(int signum)
     } 
 } 
   
+// main function 
+  
 int main() 
 { 
     // process id of user1 
@@ -42,6 +44,7 @@ int main()
     int key = 12345; 
   
     // shared memory create 
+
     shmid = shmget(key, sizeof(struct memory), IPC_CREAT | 0666); 
   
     // attaching the shared memory 
@@ -50,6 +53,7 @@ int main()
   
     // store the process id of user1 in shared memory 
     shmptr->pid1 = pid; 
+    
     shmptr->status = NotReady; 
   
     // calling the signal function using signal type SIGUSER1 

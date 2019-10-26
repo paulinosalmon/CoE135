@@ -13,9 +13,9 @@
   
 struct memory { 
     /* 
-    PID1 = Market
+    PID1 = Buyer
 	PID2 = Seller
-	PID3 = Buyer
+	PID3 = Market
     */
     char buff[96]; 
     int status, pid1, pid2, pid3; 

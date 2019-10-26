@@ -35,6 +35,7 @@ void handler(int signum)
 int main() 
 { 
     // process id of user2 
+    
     int pid = getpid(); 
   
     int shmid; 

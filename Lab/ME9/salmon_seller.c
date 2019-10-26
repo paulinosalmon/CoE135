@@ -13,9 +13,9 @@
   
 struct memory { 
     /* 
-    PID1 = Market
-	PID2 = Seller
-	PID3 = Buyer
+    PID1 = Buyer
+    PID2 = Seller
+    PID3 = Market
     */
     char buff[96]; 
     int status, pid1, pid2, pid3; 
@@ -24,10 +24,18 @@ struct memory {
 struct memory* shmptr; 
   
 void handler(int signum) {
-    if (signum == SIGUSR2) {
-        printf("Offer of "); 
-        puts(shmptr->buff); 
+    if (signum == SIGUSR1) {
+        printf("Buyer connected.\n");
     } 
+    else if (signum == SIGUSR2) {
+        printf("\nOffer: "); 
+        puts(shmptr->buff); 
+        printf("Counteroffer: "); 
+        sleep(1); 
+        fgets(shmptr->buff, 96, stdin); 
+        shmptr->status = FILLED; 
+        kill(shmptr->pid1, SIGUSR2); 
+    }
 } 
 
 void createSeller() {
@@ -62,22 +70,17 @@ int main(int argc, char **argv) {
     shmptr->status = NotReady; 
 
     // Initialization Message
-    strcpy(shmptr->buff, connectionConfirmed(seller_ID));
-    shmptr->status = Ready;    
+    shmptr->status = Ready;   
+    signal(SIGUSR1, handler);   
     signal(SIGUSR2, handler); 
+    strcpy(shmptr->buff, connectionConfirmed(seller_ID));
     kill(shmptr->pid3, SIGUSR1); 
 
     while (1) { 
+
         while (shmptr->status != Ready) 
             continue; 
-        sleep(1); 
-  
-        printf("Counteroffer: "); 
-        fgets(shmptr->buff, 100, stdin); 
-        shmptr->status = FILLED;  
-        kill(shmptr->pid1, SIGUSR1); 
 
-  
     } 
 
     shmdt((void*)shmptr); 
