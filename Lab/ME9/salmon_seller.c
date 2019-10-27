@@ -23,7 +23,32 @@ struct memory {
   
 struct memory* shmptr; 
 char seller_ID[50], price[100];
-  
+char priceComp1[25], priceComp2[25];
+int priceComp1Flag = 0;
+
+char *choppy(char *s) {
+    char *n = malloc(strlen(s ? s: "\n"));
+    if(s)
+        strcpy(n, s);
+    n[strlen(n) - 1] = '\0';
+    return n;
+}
+
+void priceCompare(char *first, char *second) {
+    int finalPrice = 0;
+    float commission = 0;
+    char *pointer;
+
+    if(!strcmp(first, second)) {
+        finalPrice = strtol(first, &pointer, 10);
+        commission = finalPrice*0.10;
+        finalPrice = finalPrice - commission;
+        printf("\nYou’ve now sold your item. You received %d, %.2f goes to the market.\n", finalPrice, commission);
+        kill(shmptr->pid1, SIGTERM);
+        exit(0);
+    }
+}
+
 void handler(int signum) {
     if (signum == SIGUSR1) {
         // add start flag to negate this if sigusr1 is needed again
@@ -31,12 +56,18 @@ void handler(int signum) {
     } 
     // Counter offering communication
     else if (signum == SIGUSR2) {
-        printf("\nOffer: "); 
+        printf("\nOffer of "); 
         puts(shmptr->buff); 
+        strcpy(priceComp2, choppy(shmptr->buff));
+
+
         printf("Counteroffer: "); 
         // sleep(1); 
         fgets(shmptr->buff, 96, stdin); 
-        strcpy(price, shmptr->buff);
+        strcpy(price, choppy(shmptr->buff));
+        strcpy(priceComp1, price);
+
+
         shmptr->status = FILLED; 
         kill(shmptr->pid1, SIGUSR2); 
 
@@ -46,6 +77,9 @@ void handler(int signum) {
         strcat(shmptr->buff, ": Counteroffer ");
         strcat(shmptr->buff, price);
         kill(shmptr->pid3, SIGUSR1); 
+
+        priceCompare(priceComp1, priceComp2);
+
     }
 } 
 
@@ -70,10 +104,9 @@ char* connectionConfirmed(char argv[]) {
 int main(int argc, char **argv) {
 
 	int pid = getpid(); 
+    checkArgs(argc, seller_ID);
     strcpy(seller_ID , argv[1]);
     char* price[100];
-
-	checkArgs(argc, seller_ID);
 
     key_t key = ftok("shmfile", 69); 
     int shmid = shmget(key, sizeof(struct memory), 0666|IPC_CREAT); 

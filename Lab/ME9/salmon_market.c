@@ -19,14 +19,19 @@ struct memory {
     */
     char buff[96]; 
     int status, pid1, pid2, pid3; 
+    // Add more PIDs for more sellers/buyers?
 }; 
   
 struct memory* shmptr; 
 
 void handler(int signum) {
 	// Initial Message/Logs
-    if (signum == SIGUSR1) 
+    if (signum == SIGUSR1) {
 		puts(shmptr->buff); 
+		// printf("Spliced string is: |%s|\n", shmptr->buff+10);
+		// printf("Spliced string is: |%s|\n", shmptr->buff+15);
+    }
+
 	// Logs
 	else if (signum == SIGUSR2) {
 
