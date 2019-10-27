@@ -17,12 +17,14 @@ struct memory {
 	PID2 = Seller
 	PID3 = Market
     */
-    char buff[96]; 
+    char buff[92]; 
     int status, pid1, pid2, pid3; 
+    int commission;
     // Add more PIDs for more sellers/buyers?
 }; 
   
 struct memory* shmptr; 
+int marketTotal = 0;
 
 void handler(int signum) {
 	// Initial Message/Logs
@@ -34,6 +36,9 @@ void handler(int signum) {
 
 	// Logs
 	else if (signum == SIGUSR2) {
+		printf("%s %d commission.\n", shmptr->buff, shmptr->commission);
+		marketTotal = marketTotal + shmptr->commission;
+		printf("Market pool: %d\n", marketTotal);
 
 	}
 } 

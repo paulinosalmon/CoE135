@@ -17,14 +17,14 @@ struct memory {
     PID2 = Seller
     PID3 = Market
     */
-    char buff[96]; 
+    char buff[92]; 
     int status, pid1, pid2, pid3; 
+    int commission;
 }; 
   
 struct memory* shmptr; 
 char buyer_ID[50], price[100];
 char priceComp1[25], priceComp2[25];
-int priceComp1Flag = 0;
 
 char *choppy(char *s) {
     char *n = malloc(strlen(s ? s: "\n"));

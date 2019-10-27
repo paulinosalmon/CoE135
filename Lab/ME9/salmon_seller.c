@@ -17,14 +17,14 @@ struct memory {
     PID2 = Seller
     PID3 = Market
     */
-    char buff[96]; 
+    char buff[92]; 
     int status, pid1, pid2, pid3; 
+    int commission;
 }; 
   
 struct memory* shmptr; 
 char seller_ID[50], price[100];
 char priceComp1[25], priceComp2[25];
-int priceComp1Flag = 0;
 
 char *choppy(char *s) {
     char *n = malloc(strlen(s ? s: "\n"));
@@ -36,15 +36,22 @@ char *choppy(char *s) {
 
 void priceCompare(char *first, char *second) {
     int finalPrice = 0;
-    float commission = 0;
+    int commission = 0;
     char *pointer;
 
     if(!strcmp(first, second)) {
         finalPrice = strtol(first, &pointer, 10);
         commission = finalPrice*0.10;
         finalPrice = finalPrice - commission;
-        printf("\nYou’ve now sold your item. You received %d, %.2f goes to the market.\n", finalPrice, commission);
+        printf("\nYou’ve now sold your item. You received %d, %d goes to the market.\n", finalPrice, commission);
         kill(shmptr->pid1, SIGTERM);
+
+        strcpy(shmptr->buff, "Item ");
+        strcat(shmptr->buff, seller_ID);
+        strcat(shmptr->buff, " Sold.");
+        shmptr->commission = commission;
+
+        kill(shmptr->pid3, SIGUSR2);
         exit(0);
     }
 }
