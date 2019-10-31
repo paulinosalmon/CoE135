@@ -1,3 +1,11 @@
+/*
+Name: Paulino I. Salmon III
+Section: HLMTRU
+
+Base code reference: 
+https://www.geeksforgeeks.org/chat-application-between-two-processes-using-signals-and-shared-memory/?fbclid=IwAR19l9dMPDJRTQbE8Df7MNepYF6Duj-3B9ufG4ow8T-Nbu1EXOrILwaibCE
+*/
+
 #include <signal.h> 
 #include <stdio.h> 
 #include <stdlib.h> 
@@ -17,7 +25,8 @@ struct memory {
 	PID2 = Seller
 	PID3 = Market
     */
-    char buff[52]; 
+    char buff[44]; 
+    int buyerFlag, sellerFlag;
     int ID1, ID2, ID4, ID5, ID6, ID7;
     int status, pid1, pid2, pid3, pid4, pid5, pid6, pid7; 
     int commission;
@@ -58,9 +67,7 @@ int main() {
     // Listen to connections
     while(1) {
         while (shmptr->status != Ready) 
-            continue; 
-        // sleep(1); 
-  
+            continue;   
         shmptr->status = FILLED; 
 	}
 

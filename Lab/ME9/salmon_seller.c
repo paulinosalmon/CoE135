@@ -1,3 +1,11 @@
+/*
+Name: Paulino I. Salmon III
+Section: HLMTRU
+
+Base code reference: 
+https://www.geeksforgeeks.org/chat-application-between-two-processes-using-signals-and-shared-memory/?fbclid=IwAR19l9dMPDJRTQbE8Df7MNepYF6Duj-3B9ufG4ow8T-Nbu1EXOrILwaibCE
+*/
+
 #include <signal.h> 
 #include <stdio.h> 
 #include <stdlib.h> 
@@ -18,7 +26,8 @@ struct memory {
     PID2 = Seller
     PID3 = Market
     */
-    char buff[52]; 
+    char buff[44]; 
+    int buyerFlag, sellerFlag;
     int ID1, ID2, ID4, ID5, ID6, ID7;
     int status, pid1, pid2, pid3, pid4, pid5, pid6, pid7; 
     int commission;
@@ -38,6 +47,8 @@ char *choppy(char *s) {
 }
 
 void initialize() {
+    // shmptr->sellerFlag = 0;
+    // shmptr->buyerFlag = 0;
     shmptr->pid1 = Default;
     shmptr->pid2 = Default;
     shmptr->pid4 = Default;
@@ -140,15 +151,16 @@ void priceCompare(char *first, char *second) {
 
         kill(shmptr->pid3, SIGUSR2);
         revertID();
+        shmptr->sellerFlag = 0;
         exit(0);
     }
 }
 
 void handler(int signum) {
 
-    if (signum == SIGUSR1) {\
+    if (signum == SIGUSR1) {
         printf("Buyer connected.\n");
-        target = selectTarget(seller_ID);\
+        target = selectTarget(seller_ID);
     } 
 
     // Counter offering communication
@@ -206,6 +218,7 @@ int main(int argc, char **argv) {
     key_t key = ftok("shmfile", 69); 
     int shmid = shmget(key, sizeof(struct memory), 0666|IPC_CREAT); 
     shmptr = (struct memory*)shmat(shmid, NULL, 0); 
+    shmptr->sellerFlag = 1;
 
     initialize();
     plugInID(pid, seller_ID);
@@ -218,6 +231,10 @@ int main(int argc, char **argv) {
     signal(SIGUSR2, handler); 
     strcpy(shmptr->buff, connectionConfirmed(seller_ID));
     kill(shmptr->pid3, SIGUSR1); 
+
+    while(shmptr->buyerFlag == 0) {
+
+    }
 
     while (1) { 
         while (shmptr->status != Ready) 
