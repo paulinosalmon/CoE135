@@ -47,6 +47,7 @@ char *choppy(char *s) {
 }
 
 void initialize() {
+    shmptr->buyerFlag = 0;
 
     if(shmptr->pid1 > 0 || shmptr->pid2 > 0 || shmptr->pid4 > 0 || shmptr->pid5 > 0 || shmptr->pid6 > 0 || shmptr->pid7 > 0) 
         return;
@@ -70,7 +71,7 @@ void initialize() {
 }
 
 
-void plugInID(int pid, char* buyer_ID_string) {
+int plugInID(int pid, char* buyer_ID_string) {
     long int buyer_ID_int;
     char *pointer;
 
@@ -79,24 +80,23 @@ void plugInID(int pid, char* buyer_ID_string) {
     if(shmptr->ID2 == Default) {
         shmptr->pid2 = pid; 
         shmptr->ID2 = buyer_ID_int;
-        revert = 2;
+        return 2;
     }
     
     else if(shmptr->ID5 == Default) {
         shmptr->pid5 = pid; 
         shmptr->ID5 = buyer_ID_int;
-        revert = 5;
+        return 5;
     }
 
     else if(shmptr->ID7 == Default) {
         shmptr->pid7 = pid; 
         shmptr->ID7 = buyer_ID_int;
-        revert = 7;
+        return 7;
     }
 
     else {
-        printf("Market is full. Cannot connect.\n");
-        exit(0);
+        return 0;
     }
 
 }
@@ -112,9 +112,9 @@ int selectTarget(char* buyer_ID_string) {
     else if (buyer_ID_int == shmptr->ID4)
         return shmptr->pid4;
     else if (buyer_ID_int == shmptr->ID6)
-        return shmptr->pid6;    else {
-        printf("Market is full. Cannot connect.\n");
-        exit(0);
+        return shmptr->pid6;    
+    else {
+        return 0;
     }
 
 }
@@ -141,7 +141,6 @@ void priceCompare(char *first, char *second) {
 void handler(int signum) {  
 
     if (signum == SIGUSR1) {
-        printf("Seller connected.\n");
         target = selectTarget(buyer_ID);
     }
 
@@ -201,8 +200,8 @@ int main(int argc, char **argv) {
     key_t key = ftok("shmfile", 69); 
     int shmid = shmget(key, sizeof(struct memory), 0666|IPC_CREAT); 
     shmptr = (struct memory*)shmat(shmid, NULL, 0); 
-    shmptr->buyerFlag = 1;
     initialize();
+    shmptr->buyerFlag = 1;
 
     printf("Waiting for seller...\n"); 
     shmptr->status = Ready;     
@@ -215,11 +214,19 @@ int main(int argc, char **argv) {
     while(shmptr->sellerFlag == 0) {
 
     }
-    printf("Seller connected.");
+    
+    shmptr->sellerFlag = 0;
 
-    plugInID(pid, buyer_ID);
+    revert = plugInID(pid, buyer_ID);
+    while(revert == 0) {
+        revert = plugInID(pid, buyer_ID);
+    }
     target = selectTarget(buyer_ID);
+    while(target == 0) {
+        target = selectTarget(buyer_ID);
+    }
     shmptr->status = NotReady; 
+    printf("Seller connected.\n");
 
     // Initialization Message
     kill(target, SIGUSR1); 

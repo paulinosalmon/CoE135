@@ -6,6 +6,8 @@ Base code reference:
 https://www.geeksforgeeks.org/chat-application-between-two-processes-using-signals-and-shared-memory/?fbclid=IwAR19l9dMPDJRTQbE8Df7MNepYF6Duj-3B9ufG4ow8T-Nbu1EXOrILwaibCE
 */
 
+                                // Fix seller program selecting itself as the target PID to send kill signal
+
 #include <signal.h> 
 #include <stdio.h> 
 #include <stdlib.h> 
@@ -47,8 +49,7 @@ char *choppy(char *s) {
 }
 
 void initialize() {
-    // shmptr->sellerFlag = 0;
-    // shmptr->buyerFlag = 0;
+    shmptr->sellerFlag = 0;
     shmptr->pid1 = Default;
     shmptr->pid2 = Default;
     shmptr->pid4 = Default;
@@ -64,7 +65,7 @@ void initialize() {
     shmptr->ID7 = Default;
 }
 
-void plugInID(int pid, char* seller_ID_string) {
+int plugInID(int pid, char* seller_ID_string) {
     long int seller_ID_int;
     char *pointer;
 
@@ -73,24 +74,23 @@ void plugInID(int pid, char* seller_ID_string) {
     if(shmptr->ID1 == Default) {
         shmptr->pid1 = pid; 
         shmptr->ID1 = seller_ID_int;
-        revert = 1;
+        return 1;
     }
     
     else if(shmptr->ID4 == Default) {
         shmptr->pid4 = pid; 
         shmptr->ID4 = seller_ID_int;
-        revert = 4;
+        return 4;
     }
     
     else if(shmptr->ID6 == Default) {
         shmptr->pid6 = pid; 
         shmptr->ID6 = seller_ID_int;
-        revert = 6;
+        return 6;
     }
 
     else {
-        printf("Market is full. Cannot connect.\n");
-        exit(0);
+        return 0;
     }
     
 }
@@ -115,8 +115,7 @@ int selectTarget(char* seller_ID_string) {
     }
 
     else {
-        printf("Market is full. Cannot connect.\n");
-        exit(0);
+        return 0;
     }
 
 }
@@ -170,7 +169,7 @@ void handler(int signum) {
         strcpy(priceComp2, choppy(shmptr->buff));
 
 
-        printf("Counteroffer: "); \
+        printf("Counteroffer: "); 
         fgets(shmptr->buff, 96, stdin); 
         strcpy(price, choppy(shmptr->buff));
         strcpy(priceComp1, price);
@@ -218,10 +217,13 @@ int main(int argc, char **argv) {
     key_t key = ftok("shmfile", 69); 
     int shmid = shmget(key, sizeof(struct memory), 0666|IPC_CREAT); 
     shmptr = (struct memory*)shmat(shmid, NULL, 0); 
-    shmptr->sellerFlag = 1;
 
     initialize();
-    plugInID(pid, seller_ID);
+    shmptr->sellerFlag = 1;
+    // revert = plugInID(pid, seller_ID);
+    // while(revert == 0) {
+    revert = plugInID(pid, seller_ID);
+    // }
 
     shmptr->status = NotReady; 
 
