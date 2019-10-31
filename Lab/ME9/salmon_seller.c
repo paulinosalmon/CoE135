@@ -10,6 +10,7 @@
 #define FILLED 0 
 #define Ready 1 
 #define NotReady -1 
+#define Default -1
   
 struct memory { 
     /* 
@@ -17,11 +18,13 @@ struct memory {
     PID2 = Seller
     PID3 = Market
     */
-    char buff[92]; 
-    int status, pid1, pid2, pid3; 
+    char buff[52]; 
+    int ID1, ID2, ID4, ID5, ID6, ID7;
+    int status, pid1, pid2, pid3, pid4, pid5, pid6, pid7; 
     int commission;
 }; 
-  
+
+int target, revert;
 struct memory* shmptr; 
 char seller_ID[50], price[100];
 char priceComp1[25], priceComp2[25];
@@ -34,6 +37,90 @@ char *choppy(char *s) {
     return n;
 }
 
+void initialize() {
+    shmptr->pid1 = Default;
+    shmptr->pid2 = Default;
+    shmptr->pid4 = Default;
+    shmptr->pid5 = Default;
+    shmptr->pid6 = Default;
+    shmptr->pid7 = Default;
+
+    shmptr->ID1 = Default;
+    shmptr->ID2 = Default;
+    shmptr->ID4 = Default;
+    shmptr->ID5 = Default;
+    shmptr->ID6 = Default;
+    shmptr->ID7 = Default;
+}
+
+void plugInID(int pid, char* seller_ID_string) {
+    long int seller_ID_int;
+    char *pointer;
+
+    seller_ID_int = strtol(seller_ID_string, &pointer, 10);
+
+    if(shmptr->ID1 == Default) {
+        shmptr->pid1 = pid; 
+        shmptr->ID1 = seller_ID_int;
+        revert = 1;
+    }
+    
+    else if(shmptr->ID4 == Default) {
+        shmptr->pid4 = pid; 
+        shmptr->ID4 = seller_ID_int;
+        revert = 4;
+    }
+    
+    else if(shmptr->ID6 == Default) {
+        shmptr->pid6 = pid; 
+        shmptr->ID6 = seller_ID_int;
+        revert = 6;
+    }
+
+    else {
+        printf("Market is full. Cannot connect.\n");
+        exit(0);
+    }
+    
+}
+
+int selectTarget(char* seller_ID_string) {
+    long int seller_ID_int;
+    int repeatFlag = 0;
+    char *pointer;
+
+    seller_ID_int = strtol(seller_ID_string, &pointer, 10);
+
+    if(seller_ID_int == shmptr->ID2) {
+        return shmptr->pid2;
+    }
+
+    else if (seller_ID_int == shmptr->ID5) {
+        return shmptr->pid5;
+    }
+
+    else if (seller_ID_int == shmptr->ID7) {
+        return shmptr->pid7;
+    }
+
+    else {
+        printf("Market is full. Cannot connect.\n");
+        exit(0);
+    }
+
+}
+
+
+void revertID() {
+    if(revert == 1)
+        shmptr->ID1 = Default;
+    else if(revert == 4)
+        shmptr->ID4 = Default;
+    else if(revert == 6)
+        shmptr->ID6 = Default;
+    return;
+}
+
 void priceCompare(char *first, char *second) {
     int finalPrice = 0;
     int commission = 0;
@@ -44,7 +131,7 @@ void priceCompare(char *first, char *second) {
         commission = finalPrice*0.10;
         finalPrice = finalPrice - commission;
         printf("\nYou’ve now sold your item. You received %d, %d goes to the market.\n", finalPrice, commission);
-        kill(shmptr->pid1, SIGTERM);
+        kill(target, SIGTERM);
 
         strcpy(shmptr->buff, "Item ");
         strcat(shmptr->buff, seller_ID);
@@ -52,15 +139,18 @@ void priceCompare(char *first, char *second) {
         shmptr->commission = commission;
 
         kill(shmptr->pid3, SIGUSR2);
+        revertID();
         exit(0);
     }
 }
 
 void handler(int signum) {
-    if (signum == SIGUSR1) {
-        // add start flag to negate this if sigusr1 is needed again
+
+    if (signum == SIGUSR1) {\
         printf("Buyer connected.\n");
+        target = selectTarget(seller_ID);\
     } 
+
     // Counter offering communication
     else if (signum == SIGUSR2) {
         printf("\nOffer of "); 
@@ -68,15 +158,13 @@ void handler(int signum) {
         strcpy(priceComp2, choppy(shmptr->buff));
 
 
-        printf("Counteroffer: "); 
-        // sleep(1); 
+        printf("Counteroffer: "); \
         fgets(shmptr->buff, 96, stdin); 
         strcpy(price, choppy(shmptr->buff));
         strcpy(priceComp1, price);
 
-
         shmptr->status = FILLED; 
-        kill(shmptr->pid1, SIGUSR2); 
+        kill(target, SIGUSR2); 
 
         sleep(1);
         strcpy(shmptr->buff, "Item ");
@@ -118,7 +206,10 @@ int main(int argc, char **argv) {
     key_t key = ftok("shmfile", 69); 
     int shmid = shmget(key, sizeof(struct memory), 0666|IPC_CREAT); 
     shmptr = (struct memory*)shmat(shmid, NULL, 0); 
-    shmptr->pid2 = pid; 
+
+    initialize();
+    plugInID(pid, seller_ID);
+
     shmptr->status = NotReady; 
 
     // Initialization Message
@@ -129,10 +220,8 @@ int main(int argc, char **argv) {
     kill(shmptr->pid3, SIGUSR1); 
 
     while (1) { 
-
         while (shmptr->status != Ready) 
             continue; 
-
     } 
 
     shmdt((void*)shmptr); 

@@ -10,29 +10,26 @@
 #define FILLED 0 
 #define Ready 1 
 #define NotReady -1 
-  
+
 struct memory { 
     /* 
     PID1 = Buyer
 	PID2 = Seller
 	PID3 = Market
     */
-    char buff[92]; 
-    int status, pid1, pid2, pid3; 
+    char buff[52]; 
+    int ID1, ID2, ID4, ID5, ID6, ID7;
+    int status, pid1, pid2, pid3, pid4, pid5, pid6, pid7; 
     int commission;
-    // Add more PIDs for more sellers/buyers?
 }; 
   
 struct memory* shmptr; 
 int marketTotal = 0;
 
 void handler(int signum) {
-	// Initial Message/Logs
-    if (signum == SIGUSR1) {
+	// Initial Message/Logs 
+    if (signum == SIGUSR1) 
 		puts(shmptr->buff); 
-		// printf("Spliced string is: |%s|\n", shmptr->buff+10);
-		// printf("Spliced string is: |%s|\n", shmptr->buff+15);
-    }
 
 	// Logs
 	else if (signum == SIGUSR2) {
