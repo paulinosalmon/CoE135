@@ -14,17 +14,8 @@ https://www.geeksforgeeks.org/chat-application-between-two-processes-using-signa
 #include <sys/shm.h> 
 #include <sys/types.h> 
 #include <unistd.h> 
-  
-#define FILLED 0 
-#define Ready 1 
-#define NotReady -1 
 
 struct memory { 
-    /* 
-    PID1 = Buyer
-	PID2 = Seller
-	PID3 = Market
-    */
     char buff[44]; 
     int buyerFlag, sellerFlag;
     int ID1, ID2, ID4, ID5, ID6, ID7;
@@ -34,6 +25,7 @@ struct memory {
   
 struct memory* shmptr; 
 int marketTotal = 0;
+int shmid;
 
 void handler(int signum) {
 	// Initial Message/Logs 
@@ -47,32 +39,50 @@ void handler(int signum) {
 		printf("Market pool: %d\n", marketTotal);
 
 	}
+
+    else if(signum == SIGINT) {
+        shmdt((void*)shmptr); 
+        shmctl(shmid, IPC_RMID, NULL); 
+        exit(0);
+    }
+
 } 
 
+void initialize() {
+    shmptr->pid1 = 0;
+    shmptr->pid2 = 0;
+    shmptr->pid4 = 0;
+    shmptr->pid5 = 0;
+    shmptr->pid6 = 0;
+    shmptr->pid7 = 0;
+
+    shmptr->ID1 = 0;
+    shmptr->ID2 = 0;
+    shmptr->ID4 = 0;
+    shmptr->ID5 = 0;
+    shmptr->ID6 = 0;
+    shmptr->ID7 = 0;
+}
+
 int main() {
-	int pid = getpid(); 
+	pid_t pid = getpid(); 
 
     key_t key = ftok("shmfile", 69); 
-    int shmid = shmget(key, sizeof(struct memory), 0666|IPC_CREAT); 
+    shmid = shmget(key, sizeof(struct memory), 0666|IPC_CREAT); 
     shmptr = (struct memory*)shmat(shmid, NULL, 0); 
+    initialize();
 
     printf("Market pool: 0\n");
     printf("Waiting for connections...\n");
 
-    shmptr->pid3 = pid; 
-    shmptr->status = NotReady;    
+    shmptr->pid3 = pid;  
     signal(SIGUSR1, handler);     
-    signal(SIGUSR2, handler);  
+    signal(SIGUSR2, handler);
+    signal(SIGINT, handler);     
 
     // Listen to connections
-    while(1) {
-        while (shmptr->status != Ready) 
-            continue;   
-        shmptr->status = FILLED; 
-	}
+    while(1) {}
 
-    shmdt((void*)shmptr); 
-    shmctl(shmid, IPC_RMID, NULL); 
     return 0; 
 
 }

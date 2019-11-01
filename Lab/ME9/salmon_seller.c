@@ -6,8 +6,6 @@ Base code reference:
 https://www.geeksforgeeks.org/chat-application-between-two-processes-using-signals-and-shared-memory/?fbclid=IwAR19l9dMPDJRTQbE8Df7MNepYF6Duj-3B9ufG4ow8T-Nbu1EXOrILwaibCE
 */
 
-                                // Fix seller program selecting itself as the target PID to send kill signal
-
 #include <signal.h> 
 #include <stdio.h> 
 #include <stdlib.h> 
@@ -17,17 +15,7 @@ https://www.geeksforgeeks.org/chat-application-between-two-processes-using-signa
 #include <sys/types.h> 
 #include <unistd.h> 
   
-#define FILLED 0 
-#define Ready 1 
-#define NotReady -1 
-#define Default -1
-  
 struct memory { 
-    /* 
-    PID1 = Buyer
-    PID2 = Seller
-    PID3 = Market
-    */
     char buff[44]; 
     int buyerFlag, sellerFlag;
     int ID1, ID2, ID4, ID5, ID6, ID7;
@@ -35,7 +23,7 @@ struct memory {
     int commission;
 }; 
 
-int target, revert;
+int target, revert, shmid;
 struct memory* shmptr; 
 char seller_ID[50], price[100];
 char priceComp1[25], priceComp2[25];
@@ -48,22 +36,6 @@ char *choppy(char *s) {
     return n;
 }
 
-void initialize() {
-    shmptr->sellerFlag = 0;
-    shmptr->pid1 = Default;
-    shmptr->pid2 = Default;
-    shmptr->pid4 = Default;
-    shmptr->pid5 = Default;
-    shmptr->pid6 = Default;
-    shmptr->pid7 = Default;
-
-    shmptr->ID1 = Default;
-    shmptr->ID2 = Default;
-    shmptr->ID4 = Default;
-    shmptr->ID5 = Default;
-    shmptr->ID6 = Default;
-    shmptr->ID7 = Default;
-}
 
 int plugInID(int pid, char* seller_ID_string) {
     long int seller_ID_int;
@@ -71,27 +43,26 @@ int plugInID(int pid, char* seller_ID_string) {
 
     seller_ID_int = strtol(seller_ID_string, &pointer, 10);
 
-    if(shmptr->ID1 == Default) {
+    if(shmptr->ID1 == 0) {
         shmptr->pid1 = pid; 
         shmptr->ID1 = seller_ID_int;
         return 1;
     }
     
-    else if(shmptr->ID4 == Default) {
+    else if(shmptr->ID4 == 0) {
         shmptr->pid4 = pid; 
         shmptr->ID4 = seller_ID_int;
         return 4;
     }
     
-    else if(shmptr->ID6 == Default) {
+    else if(shmptr->ID6 == 0) {
         shmptr->pid6 = pid; 
         shmptr->ID6 = seller_ID_int;
         return 6;
     }
 
-    else {
+    else 
         return 0;
-    }
     
 }
 
@@ -102,32 +73,25 @@ int selectTarget(char* seller_ID_string) {
 
     seller_ID_int = strtol(seller_ID_string, &pointer, 10);
 
-    if(seller_ID_int == shmptr->ID2) {
+    if(seller_ID_int == shmptr->ID2) 
         return shmptr->pid2;
-    }
-
-    else if (seller_ID_int == shmptr->ID5) {
+    else if (seller_ID_int == shmptr->ID5) 
         return shmptr->pid5;
-    }
-
-    else if (seller_ID_int == shmptr->ID7) {
+    else if (seller_ID_int == shmptr->ID7) 
         return shmptr->pid7;
-    }
-
-    else {
+    else 
         return 0;
-    }
 
 }
 
 
 void revertID() {
     if(revert == 1)
-        shmptr->ID1 = Default;
+        shmptr->ID1 = 0;
     else if(revert == 4)
-        shmptr->ID4 = Default;
+        shmptr->ID4 = 0;
     else if(revert == 6)
-        shmptr->ID6 = Default;
+        shmptr->ID6 = 0;
     return;
 }
 
@@ -160,7 +124,15 @@ void handler(int signum) {
     if (signum == SIGUSR1) {
         printf("Buyer connected.\n");
         target = selectTarget(seller_ID);
+        while(target == 0) {
+            target = selectTarget(seller_ID);
+        }
     } 
+
+    else if(signum == SIGINT) {
+        revertID();
+        exit(0);
+    }
 
     // Counter offering communication
     else if (signum == SIGUSR2) {
@@ -168,13 +140,11 @@ void handler(int signum) {
         puts(shmptr->buff); 
         strcpy(priceComp2, choppy(shmptr->buff));
 
-
         printf("Counteroffer: "); 
-        fgets(shmptr->buff, 96, stdin); 
+        fgets(shmptr->buff, 44, stdin); 
         strcpy(price, choppy(shmptr->buff));
         strcpy(priceComp1, price);
 
-        shmptr->status = FILLED; 
         kill(target, SIGUSR2); 
 
         sleep(1);
@@ -196,7 +166,7 @@ void createSeller() {
 void checkArgs(int argc, char argv[]) { 
 	argc == 2 ? 
 		createSeller() : 
-			(printf("Error, no argument for Seller ID. Exiting...\n"), exit(0));
+			(printf("Error, no argument for Seller ID. Exiting...\n"), revertID(), exit(0));
 }
 
 char* connectionConfirmed(char argv[]) {
@@ -209,41 +179,27 @@ char* connectionConfirmed(char argv[]) {
 
 int main(int argc, char **argv) {
 
-	int pid = getpid(); 
+	pid_t pid = getpid(); 
     checkArgs(argc, seller_ID);
     strcpy(seller_ID , argv[1]);
     char* price[100];
 
     key_t key = ftok("shmfile", 69); 
-    int shmid = shmget(key, sizeof(struct memory), 0666|IPC_CREAT); 
+    shmid = shmget(key, sizeof(struct memory), 0666|IPC_CREAT); 
     shmptr = (struct memory*)shmat(shmid, NULL, 0); 
-
-    initialize();
-    shmptr->sellerFlag = 1;
-    // revert = plugInID(pid, seller_ID);
-    // while(revert == 0) {
-    revert = plugInID(pid, seller_ID);
-    // }
-
-    shmptr->status = NotReady; 
+    shmptr->sellerFlag = 1;    
 
     // Initialization Message
-    shmptr->status = Ready;   
     signal(SIGUSR1, handler);   
     signal(SIGUSR2, handler); 
+    signal(SIGINT, handler);   
     strcpy(shmptr->buff, connectionConfirmed(seller_ID));
     kill(shmptr->pid3, SIGUSR1); 
 
-    while(shmptr->buyerFlag == 0) {
+    while(shmptr->buyerFlag == 0) {}
+    revert = plugInID(pid, seller_ID);
 
-    }
-
-    while (1) { 
-        while (shmptr->status != Ready) 
-            continue; 
-    } 
-
-    shmdt((void*)shmptr); 
+    while (1) {} 
 
     return 0;
 
