@@ -58,7 +58,7 @@ answering all the items along with their invaluable contributions. \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Address Translation}
 \begin{itemize}
-	\item \textit{A}. (10 pts) Consider the following Segment Table:
+	\item (10 pts) Consider the following Segment Table:
 		\begin{table}[H]
 			\centering
 			\begin{tabular}{lll}
@@ -90,10 +90,12 @@ answering all the items along with their invaluable contributions. \\
 \textbf{Self Grade For \#: 4}
 \end{center}
 
+% Reference used: \textcite{Lecture5}
+
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{itemize}
-	\item \textit{B}. (5 pts) A computing machine provides its users with a virtual-memory space of $2^{32}$ bytes.
+	\item (5 pts) A computing machine provides its users with a virtual-memory space of $2^{32}$ bytes.
 	The computer has $2^{18}$ bytes of physical memory. The virtual memory is implemented by a
 	paging scheme, and the page size is 4096 bytes. A user process requests access to the virtual
 	address 11123456. Determine and explain how the system establishes the corresponding physical
@@ -111,7 +113,7 @@ answering all the items along with their invaluable contributions. \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{itemize}
-	\item \textit{C}. (5 pts) You are given a demand-paged memory management scheme. It takes 10ms to service
+	\item (5 pts) You are given a demand-paged memory management scheme. It takes 10ms to service
 	a page fault if an empty page is available or the replaced page is not modified, and it takes 18ms
 	if the replaced page is modified. Memory access time takes 80ns. If the page to be replaced is
 	modified 70\% of the time, what is the maximum acceptable page-fault rate for an effective
@@ -192,7 +194,7 @@ number of page faults under the \# column.
 	\textbf{Self Grade For \#: 4}
 \end{center}
 
-(c) (5 pts) How many page faults would occur with LFU (Least Frequently Used) page
+(5 pts) How many page faults would occur with LFU (Least Frequently Used) page
 replacement policy? Place an 'X' in each box corresponding to a page fault. Place the total number
 of page faults under the \# column.
 \begin{table}[H]
@@ -241,7 +243,7 @@ of page faults under the \# column.
 \begin{center}
 	\textbf{Self Grade For \#: 3}
 \end{center}
-
+% Reference used: \textcite{Silberschatz}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -331,103 +333,108 @@ running when the other requests arrive? Explain your answer.
 	\end{center}
 \end{itemize}
 
-(c) (3 pts) What will be prioritised by the code snippet above? Is it the readers or the writers?
+(3 pts) What will be prioritised by the code snippet above? Is it the readers or the writers?
 Explain your answer.
 
 \begin{itemize}
 	\item The code prioritizes the writers first, as the condition gets trapped in a while loop and is locked until both the \textit{activeWrite} and the \textit{activeRead} conditions are triggered (decremented or incremented) properly to break the lock.
-		\begin{center}
+	\begin{center}
 		\textbf{Self Grade For \#: 3}
 	\end{center}
 \end{itemize}
 
-(d) (3 pts) How does the code snippet above ensure that if activeRead > 0, then
+(3 pts) How does the code snippet above ensure that if activeRead > 0, then
 activeWrite == 0?
 
 \begin{itemize}
-	\item 
+	\item TIn the first while loop of the \textit{readerThreadRoutine()}, the functions gets stalled in the while loop until activeWrite reaches a value of zero. The following condition after the while loop gets broken (when activeWrite == 0) is where activeRead gets incremented, therefore, satisfying the conditions of the question. The lock is released afterwards.
+	\begin{center}
+		\textbf{Self Grade For \#: 3}
+	\end{center}
 \end{itemize}
 
-(e) (3 pts) How does the code snippet above ensure that there can only be one writer at a time,
+(3 pts) How does the code snippet above ensure that there can only be one writer at a time,
 and that if activeWrite == 1, then activeRead == 0?
 
 \begin{itemize}
-	\item 
+	\item In the \textit{readerThreadRoutine()} function, there is an if statement in the lower half that checks whether activeRead == 0 AND waitWrite > 0. If it so happens that the condition proves true, this signals that there are currently no active readers in the critical section and that a pending write is ready to be deployed, thus, the okToWrite.signal() is broadcasted, and the lock is released. \\
+	With regards to how it ensures that activeWrite == 1 when activeRead == 0, this condition is checked in the first part of the \textit{writerThreadRoutine()} function. The while loop ensures that neither activeWrite, activeRead nor waitRead has a value greater than 0. When this loop gets broken, it is ensured that activeRead has indeed a value of 0. The variable activeWrite is incremented to 1 afterwards.
+	\begin{center}
+		\textbf{Self Grade For \#: 3}
+	\end{center}
 \end{itemize}
 
-(f) (3 pts) Why does the reader not need to check if waitRead > 0?
+(3 pts) Why does the reader not need to check if waitRead > 0?
 
 \begin{itemize}
-	\item 
+	\item The reader can only be deployed if no writes are currently running in the critical section. The writer checks the waitRead > 0 because it indicates that readers are queued up to enter the critical section, and will therefore broadcast a go signal to the queued up readers that it is safe to proceed. In comparison to the reader part, on the other hand, multiple queued up readers can safely enter the critical zone simultaneously as long as no writer is inside, eliminating the need to check if there is a ready reader on standby.
+	\begin{center}
+		\textbf{Self Grade For \#: 3}
+	\end{center}
 \end{itemize}
 
-\begin{center}
-	\textbf{Self Grade For \#: 4}
-\end{center}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Interprocess Communication}
 (20 pts) You are given the code template below:
 \begin{lstlisting}
-(1) #include <stdio.h>
-(2) #include <stdlib.h>
-(3) #include <string.h>
-(4) #include <stdint.h>
-(5) #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
 
-(6) #include <assert.h>
-(7) #include <unistd.h>
-(8) #include <fcntl.h>
-(9) #include <sys/mman.h>
-(10)#include <sys/stat.h>
-(11)#include <sys/types.h>
-(12)#include <sys/wait.h>
-(13)
-(14)#define PAGESIZE 4096
-(15)#define CTRMAX 1000000
-(16)
-(17)#define increment_val(ptr) (*ptr) += 1
-(18)
-(19)int main()
-(20){
-(21)	uint32_t *smem = mmap(NULL, PAGESIZE,
-(22)	PROT_READ | PROT_WRITE,
-(23)	MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-(24)
-(25)	assert(smem != MAP_FAILED);
-(26)
-(27)	*smem = 10;
-(28)
-(29)	pid_t pid;
-(30)
-(31)	pid = fork();
-(32)	assert(pid >= 0);
-(33)
-(34)	if (pid) {
-(35)		for (int ctr = 0; ctr < CTRMAX; ++ctr)
-(36)			increment_val(smem);
-(37)		wait(NULL);
-(38)	} else {
-(39)		for (int ctr = 0; ctr < CTRMAX; ++ctr)
-(40)			increment_val(smem);
-(41)	}
-(42)
-(43)	if (pid) {
-(44)		printf("Data: %d\n", *smem);
-(45)		int unmap_res = munmap(smem, PAGESIZE);
-(46)		assert(unmap_res == 0);
-(47)	}
-(48)
-(49)	return 0;
-(50)}
+#include <assert.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+#define PAGESIZE 4096
+#define CTRMAX 1000000
+
+#define increment_val(ptr) (*ptr) += 1
+
+int main() {
+	uint32_t *smem = mmap(NULL, PAGESIZE,
+	PROT_READ | PROT_WRITE,
+	MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+	assert(smem != MAP_FAILED);
+	
+	*smem = 10;
+	
+	pid_t pid;
+	
+	pid = fork();
+	assert(pid >= 0);
+	
+	if (pid) {
+		for (int ctr = 0; ctr < CTRMAX; ++ctr)
+			increment_val(smem);
+		wait(NULL);
+	} 
+	else {
+		for (int ctr = 0; ctr < CTRMAX; ++ctr)
+			increment_val(smem);
+	}
+	
+	if (pid) {
+		printf("Data: %d\n", *smem);
+		int unmap_res = munmap(smem, PAGESIZE);
+		assert(unmap_res == 0);
+	}
+	
+	return 0;
+}
 \end{lstlisting}
 
 \begin{itemize}
-\item \textit{A}. (3 pts) The code snippet above will rarely print the value 2000010 at line 45, if at all, every
-time the code is executed. What is the reason behind this anomaly?
+\item (3 pts) The code snippet above will rarely print the value 2000010 at line 45, if at all, every time the code is executed. What is the reason behind this anomaly?
 \begin{itemize} 
-	\item Hi
+	\item The \#define for CTRMAX is only up until 1000000. This sets the limit for the increments, and even with the help of the child process increments, this limit will barely break the 2000010 limit required in this question.
 	
 	\begin{center}
 		\textbf{Self Grade For \#: 4}
@@ -436,23 +443,68 @@ time the code is executed. What is the reason behind this anomaly?
 \end{itemize}
 
 \begin{itemize}
-	\item \textit{B}. (6 pts) Propose a modification to the given code template to ensure that the value 2000010 is
+	\item (6 pts) Propose a modification to the given code template to ensure that the value 2000010 is
 	always printed at line 45 (without printing it directly!).
-	\begin{itemize} 
-	\item Hi
-		
+	\begin{lstlisting}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+#include <assert.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+#define PAGESIZE 4096
+#define CTRMAX 2000000
+
+#define increment_val(ptr) (*ptr) += 1
+
+int main() {
+	uint32_t *smem = mmap(NULL, PAGESIZE,
+	PROT_READ | PROT_WRITE,
+	MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+	assert(smem != MAP_FAILED);
+
+	*smem = 10;
+	
+	pid_t pid;
+	
+	pid = fork();
+	assert(pid >= 0);
+	
+	if (pid) {
+		for (int ctr = 0; ctr < CTRMAX; ++ctr)
+			increment_val(smem);
+		wait(NULL);
+	} 
+	
+	if (pid) {
+		printf("Data: %d\n", *smem);
+		int unmap_res = munmap(smem, PAGESIZE);
+		assert(unmap_res == 0);
+	}
+	
+	return 0;
+}
+	\end{lstlisting}
+Modifications: Changed CTRMAX to 2000000 and erased the increments in the child process if-else condition.
 		\begin{center}
 			\textbf{Self Grade For \#: 4}
 		\end{center}
-	\end{itemize}
 \end{itemize}
 
 \begin{itemize}
-	\item \textit{C}. (5 pts) If the program above were to be implemented using message passing API, would the
+	\item (5 pts) If the program above were to be implemented using message passing API, would the
 	anomaly still occur without the modification needed for shared memory API? Explain your
 	answer.
 	\begin{itemize} 
-	\item Hi
+	\item Since the upper limit is still bounded by the \#define CTRMAX 1000000, the value 2000010 will still be, if at all, rarely printed, since changing the APIs should not affect the defines at the starting part of the snippet.
 		\begin{center}
 			\textbf{Self Grade For \#: 4}
 		\end{center}
@@ -460,14 +512,66 @@ time the code is executed. What is the reason behind this anomaly?
 \end{itemize}
 
 \begin{itemize}
-\item \textit{D}. (6 pts) Present a reimplementation of the code template provided using message passing
+\item (6 pts) Present a reimplementation of the code template provided using message passing
 API.
-	\begin{itemize} 
-	\item Hi
+	\begin{lstlisting}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+#include <assert.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/ipc.h> 
+#include <sys/msg.h> 
+
+#define PAGESIZE 4096
+#define CTRMAX 2000000
+
+#define increment_val(ptr) ptr += 1
+
+int main() {
+	
+	key_t key;
+	key = ftok("probset", 65);
+	
+	uint32_t smem = msgget(key, 0666 | IPC_CREAT); 
+	
+	smem = 10;
+	
+	pid_t pid;
+	
+	pid = fork();
+	assert(pid >= 0);
+	
+	if (pid) {
+		for (int ctr = 0; ctr < CTRMAX; ++ctr)
+			increment_val(smem);
+		wait(NULL);
+	} 
+	else {
+		for (int ctr = 0; ctr < CTRMAX; ++ctr)
+			increment_val(smem);
+	}
+	
+	if (pid) {
+		printf("Data: %d\n", smem);
+		msgctl(smem, IPC_RMID, NULL);
+	}
+	
+	return 0;
+}
+	\end{lstlisting}
 		\begin{center}
 			\textbf{Self Grade For \#: 4}
 		\end{center}
-	\end{itemize}
+% Reference used: \textcite{Lecture7}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -523,11 +627,9 @@ API.
 		\begin{center}
 		\textbf{Self Grade For \#: 3}
 		\end{center}
-
-	
 		
 	\end{itemize}
 \end{itemize}
-
+\nocite{*}
 \printbibliography
 \end{document}
