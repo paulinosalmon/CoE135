@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.9.7)  21 NOV 2019 14:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.9.7)  21 NOV 2019 16:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -803,39 +803,39 @@ File: t1fvm.fd 2004/09/07 scalable font definitions for T1/fvm.
 )
 LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
 (Font)              scaled to size 8.99994pt on input line 255.
- [2]
-Underfull \hbox (badness 1735) in paragraph at lines 504--504
+ [2] [3]
+Underfull \hbox (badness 1735) in paragraph at lines 533--533
 \T1/ptm/m/n/10 fbclid = IwAR04uuGgICHU1slLl0YC8RGnCuJAweN -[]
  []
 
-[3]
-Underfull \hbox (badness 1424) in paragraph at lines 504--504
+
+Underfull \hbox (badness 1424) in paragraph at lines 533--533
 \T1/ptm/m/n/10 able: $https : / / www . geeksforgeeks . org / inorder -[]
  []
 
 
-Underfull \hbox (badness 1527) in paragraph at lines 504--504
+Underfull \hbox (badness 1527) in paragraph at lines 533--533
 \T1/ptm/m/n/10 tree -[] traversal -[] without -[] recursion -[] and -[] without
  -[]
  []
 
 
-Underfull \hbox (badness 5105) in paragraph at lines 504--504
+Underfull \hbox (badness 5105) in paragraph at lines 533--533
 \T1/ptm/m/n/10 extended -[] ^^\lesystem / ?fbclid = IwAR1R0mSK7 -[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 504--504
+Underfull \hbox (badness 10000) in paragraph at lines 533--533
 \T1/ptm/m/n/10 rzD0yu5eW0IIKqMObTjtEXuYNr0PWu0SmwOO -[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 504--504
+Underfull \hbox (badness 10000) in paragraph at lines 533--533
 \T1/ptm/m/n/10 Ac-cessed 2019-09-19, 2019. [On-line]. Avail-able:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 504--504
+Underfull \hbox (badness 10000) in paragraph at lines 533--533
 \T1/ptm/m/n/10 IwAR1DKfk04pC3KqJsfsvNYejTZhtjWAtISlUL9 _
  []
 
@@ -850,9 +850,7 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[4
-
-] (./PS2.aux)
+[4] (./PS2.aux)
 Package logreq Info: Writing requests to 'PS2.run.xml'.
 \openout1 = `PS2.run.xml'.
 
@@ -874,7 +872,7 @@ blic/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/be
 ra/fvmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><
 /usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on PS2.pdf (4 pages, 111387 bytes).
+Output written on PS2.pdf (4 pages, 114525 bytes).
 PDF statistics:
  54 PDF objects out of 1000 (max. 8388607)
  38 compressed objects within 1 object stream

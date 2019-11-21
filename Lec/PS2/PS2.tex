@@ -478,7 +478,8 @@ API.
 	of threads/use of too many threads is bad. Discuss two different reasons as to why the overuse
 	or processes/use of too many processes is bad. Give an example for each reason.
 	\begin{itemize} 
-		\item Hi
+		\item \textit{Threads} - one disadvantage of overusing threads is being able to \textbf{effectively synchronize all these created threads}. While the use of mutex can easily synchronize threads regardless of number, the idea of being able to do so with good performance is the downside. Another disadvantage of this would be is the \textbf{thundering herd problem}. This problem happens when a huge number of resources are awoken at the same time by an event they are waiting for. All these threads will eventually compete with each other as only one is able to win, therefore starving other threads of other resources. This will slow down the machine until this "herd" of threads is calmed down again.
+		\item \textit{Processes} - while the \textbf{thundering herd problem} is applicable to threads, this problem is also applicable to the case of too many processes competing against each other. Too many processes would also lead to constant data swapping. This results to a problem known as \textbf{thrashing}. This happens when the present resources are overused due to the vast number of processes undergoing constant page faults and swapping.
 		\begin{center}
 			\textbf{Self Grade For \#: 4}
 		\end{center}
@@ -493,10 +494,38 @@ API.
 	\item (10 pts) Determine which state the processes below belong to given their current
 	situation.
 	\begin{itemize} 
-		\item Hi
+		\item (2 pts) Newly spawned child process \\
+		Answer: \textbf{New}
 		\begin{center}
 			\textbf{Self Grade For \#: 4}
 		\end{center}
+	 
+		\item (2 pts) Process is currently performing busy waiting \\
+		Answer: \textbf{Waiting}
+		\begin{center}
+			\textbf{Self Grade For \#: 4}
+		\end{center}
+	
+		\item (2 pts) Process issued a write request to your Network Interface Card \\
+		Answer: \textbf{Running}
+		\begin{center}
+			\textbf{Self Grade For \#: 4}
+		\end{center}
+	
+		\item (2 pts) Process just invoked exit() \\
+		Answer: \textbf{Terminated}
+		\begin{center}
+		\textbf{Self Grade For \#: 4}
+		\end{center}
+	
+		\item (2 pts) Process was just kicked out of the CPU after its time slice expired \\
+		Answer: \textbf{Ready}
+		\begin{center}
+		\textbf{Self Grade For \#: 3}
+		\end{center}
+
+	
+		
 	\end{itemize}
 \end{itemize}
 
