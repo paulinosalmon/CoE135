@@ -1,0 +1,15 @@
+[0] Config.pm:302> INFO - This is Biber 2.9
+[0] Config.pm:305> INFO - Logfile is 'CoE135_Ragmac_Salmon.blg'
+[52] biber:313> INFO - === Mon Dec  9, 2019, 22:09:27
+[84] Biber.pm:371> INFO - Reading 'CoE135_Ragmac_Salmon.bcf'
+[191] Biber.pm:854> INFO - Using all citekeys in bib section 0
+[214] Biber.pm:3981> INFO - Processing section 0
+[231] Biber.pm:4154> INFO - Looking for bibtex format file 'ref.bib' for section 0
+[233] bibtex.pm:1468> INFO - LaTeX decoding ...
+[268] bibtex.pm:1294> INFO - Found BibTeX data source 'ref.bib'
+[428] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[428] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[428] Biber.pm:3809> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
+[428] Biber.pm:3815> INFO - No sort tailoring available for locale 'en-US'
+[463] bbl.pm:617> INFO - Writing 'CoE135_Ragmac_Salmon.bbl' with encoding 'ascii'
+[477] bbl.pm:720> INFO - Output to CoE135_Ragmac_Salmon.bbl

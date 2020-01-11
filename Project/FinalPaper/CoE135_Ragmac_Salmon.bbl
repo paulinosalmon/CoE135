@@ -1,0 +1,585 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{1}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=917d469c81285b385ff3da881774b832}{%
+           family={{Exploit.PH}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{917d469c81285b385ff3da881774b832}
+      \strng{fullhash}{917d469c81285b385ff3da881774b832}
+      \strng{bibnamehash}{917d469c81285b385ff3da881774b832}
+      \strng{authorbibnamehash}{917d469c81285b385ff3da881774b832}
+      \strng{authornamehash}{917d469c81285b385ff3da881774b832}
+      \strng{authorfullhash}{917d469c81285b385ff3da881774b832}
+      \field{sortinit}{1}
+      \field{sortinithash}{2174f786c6195e7fe2ee1c229b416e29}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{System Call Hooking}}
+      \field{year}{2016}
+      \verb{urlraw}
+      \verb https://exploit.ph/linux-kernel-hacking/2014/07/10/system-call-hooking/#disqus_thread
+      \endverb
+      \verb{url}
+      \verb https://exploit.ph/linux-kernel-hacking/2014/07/10/system-call-hooking/#disqus_thread
+      \endverb
+    \endentry
+    \entry{27}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=9e6ef4e14c9a488de65b680c8f1e88e5}{%
+           family={{Regis Kristian P. Casquejo, Phoebe Meira U. Chua, Patricia Dolores M. Soriano}},
+           familyi={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{9e6ef4e14c9a488de65b680c8f1e88e5}
+      \strng{fullhash}{9e6ef4e14c9a488de65b680c8f1e88e5}
+      \strng{bibnamehash}{9e6ef4e14c9a488de65b680c8f1e88e5}
+      \strng{authorbibnamehash}{9e6ef4e14c9a488de65b680c8f1e88e5}
+      \strng{authornamehash}{9e6ef4e14c9a488de65b680c8f1e88e5}
+      \strng{authorfullhash}{9e6ef4e14c9a488de65b680c8f1e88e5}
+      \field{sortinit}{2}
+      \field{sortinithash}{cbff857e587bcb4635511624d773949e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{CoE 135 Project: System Calls Hijacking}}
+      \field{year}{2018}
+    \endentry
+    \entry{28}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=4eec99b17cdf85138d7c6a035ff9b663}{%
+           family={{Seref S. Agiroglu, Gurol Canbek}},
+           familyi={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{4eec99b17cdf85138d7c6a035ff9b663}
+      \strng{fullhash}{4eec99b17cdf85138d7c6a035ff9b663}
+      \strng{bibnamehash}{4eec99b17cdf85138d7c6a035ff9b663}
+      \strng{authorbibnamehash}{4eec99b17cdf85138d7c6a035ff9b663}
+      \strng{authornamehash}{4eec99b17cdf85138d7c6a035ff9b663}
+      \strng{authorfullhash}{4eec99b17cdf85138d7c6a035ff9b663}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Keyloggers Increasing Threats to Computer Security and Privacy}}
+      \field{year}{2009}
+    \endentry
+    \entry{2}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=40d9c3766d22fec5096eb5a16ca928ae}{%
+           family={Kong},
+           familyi={K\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {O'Reilly}%
+      }
+      \strng{namehash}{40d9c3766d22fec5096eb5a16ca928ae}
+      \strng{fullhash}{40d9c3766d22fec5096eb5a16ca928ae}
+      \strng{bibnamehash}{40d9c3766d22fec5096eb5a16ca928ae}
+      \strng{authorbibnamehash}{40d9c3766d22fec5096eb5a16ca928ae}
+      \strng{authornamehash}{40d9c3766d22fec5096eb5a16ca928ae}
+      \strng{authorfullhash}{40d9c3766d22fec5096eb5a16ca928ae}
+      \field{sortinit}{5}
+      \field{sortinithash}{3c19c3776b658b3558e9e2e4840c01e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Designing BSD Rootkits: An Introduction to Kernel Hacking}}
+      \field{year}{2007}
+    \endentry
+    \entry{3}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=232838e438a645506e4759e027268414}{%
+           family={{Tyler Nichols}},
+           familyi={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{232838e438a645506e4759e027268414}
+      \strng{fullhash}{232838e438a645506e4759e027268414}
+      \strng{bibnamehash}{232838e438a645506e4759e027268414}
+      \strng{authorbibnamehash}{232838e438a645506e4759e027268414}
+      \strng{authornamehash}{232838e438a645506e4759e027268414}
+      \strng{authorfullhash}{232838e438a645506e4759e027268414}
+      \field{sortinit}{6}
+      \field{sortinithash}{57e57fb8451e7fcfa45d1e069f6d3136}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{Hooking the Linux System Call Table}}
+      \field{year}{2015}
+      \verb{urlraw}
+      \verb https://tnichols.org/2015/10/19/Hooking-the-Linux-System-Call-Table/
+      \endverb
+      \verb{url}
+      \verb https://tnichols.org/2015/10/19/Hooking-the-Linux-System-Call-Table/
+      \endverb
+    \endentry
+    \entry{4}{misc}{}
+      \field{sortinit}{7}
+      \field{sortinithash}{c818dd9105a2852444fc9f5e145c294e}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{{Stack Overflow}}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{Linux Kernel: System call hooking example}
+      \field{year}{2010}
+      \verb{urlraw}
+      \verb https://stackoverflow.com/questions/2103315/linux-kernel-system-call-hooking-example
+      \endverb
+      \verb{url}
+      \verb https://stackoverflow.com/questions/2103315/linux-kernel-system-call-hooking-example
+      \endverb
+    \endentry
+    \entry{5}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=5468a39d7e1d36ca49073d014e184a6d}{%
+           family={{Arvind Raj}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{5468a39d7e1d36ca49073d014e184a6d}
+      \strng{fullhash}{5468a39d7e1d36ca49073d014e184a6d}
+      \strng{bibnamehash}{5468a39d7e1d36ca49073d014e184a6d}
+      \strng{authorbibnamehash}{5468a39d7e1d36ca49073d014e184a6d}
+      \strng{authornamehash}{5468a39d7e1d36ca49073d014e184a6d}
+      \strng{authorfullhash}{5468a39d7e1d36ca49073d014e184a6d}
+      \field{sortinit}{9}
+      \field{sortinithash}{1dd72ab054147731c9d824b49aba0534}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{Adding hello world system call to Linux}}
+      \field{year}{2012}
+      \verb{urlraw}
+      \verb https://arvindsraj.wordpress.com/2012/10/05/adding-hello-world-system-call-to-linux/
+      \endverb
+      \verb{url}
+      \verb https://arvindsraj.wordpress.com/2012/10/05/adding-hello-world-system-call-to-linux/
+      \endverb
+    \endentry
+    \entry{7}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=dd4736469bbfe414ef61c1c50c77e9cc}{%
+           family={{Lucian Constantin}},
+           familyi={L\bibinitperiod}}}%
+      }
+      \strng{namehash}{dd4736469bbfe414ef61c1c50c77e9cc}
+      \strng{fullhash}{dd4736469bbfe414ef61c1c50c77e9cc}
+      \strng{bibnamehash}{dd4736469bbfe414ef61c1c50c77e9cc}
+      \strng{authorbibnamehash}{dd4736469bbfe414ef61c1c50c77e9cc}
+      \strng{authornamehash}{dd4736469bbfe414ef61c1c50c77e9cc}
+      \strng{authorfullhash}{dd4736469bbfe414ef61c1c50c77e9cc}
+      \field{sortinit}{1}
+      \field{sortinithash}{2174f786c6195e7fe2ee1c229b416e29}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{Attack campaign uses keylogger to hijack key business email accounts}}
+      \field{year}{2016}
+      \verb{urlraw}
+      \verb https://www.pcworld.com/article/3045539/attack-campaign-uses-keylogger-to-hijack-key-business-email-accounts.html
+      \endverb
+      \verb{url}
+      \verb https://www.pcworld.com/article/3045539/attack-campaign-uses-keylogger-to-hijack-key-business-email-accounts.html
+      \endverb
+    \endentry
+    \entry{8}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=7436b0bcc01ed1ed02d79dc77da9c758}{%
+           family={{Stu Sjouwerman}},
+           familyi={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{7436b0bcc01ed1ed02d79dc77da9c758}
+      \strng{fullhash}{7436b0bcc01ed1ed02d79dc77da9c758}
+      \strng{bibnamehash}{7436b0bcc01ed1ed02d79dc77da9c758}
+      \strng{authorbibnamehash}{7436b0bcc01ed1ed02d79dc77da9c758}
+      \strng{authornamehash}{7436b0bcc01ed1ed02d79dc77da9c758}
+      \strng{authorfullhash}{7436b0bcc01ed1ed02d79dc77da9c758}
+      \field{sortinit}{1}
+      \field{sortinithash}{2174f786c6195e7fe2ee1c229b416e29}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{Anthem Breach Began with Phishing of Employees}}
+      \field{year}{2015}
+      \verb{urlraw}
+      \verb https://blog.knowbe4.com/anthem-breach-began-with-phishing-of-employees
+      \endverb
+      \verb{url}
+      \verb https://blog.knowbe4.com/anthem-breach-began-with-phishing-of-employees
+      \endverb
+    \endentry
+    \entry{9}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=25f9e1454d12b8ef5ae6779a7b8beb2e}{%
+           family={jarun},
+           familyi={j\bibinitperiod}}}%
+      }
+      \strng{namehash}{25f9e1454d12b8ef5ae6779a7b8beb2e}
+      \strng{fullhash}{25f9e1454d12b8ef5ae6779a7b8beb2e}
+      \strng{bibnamehash}{25f9e1454d12b8ef5ae6779a7b8beb2e}
+      \strng{authorbibnamehash}{25f9e1454d12b8ef5ae6779a7b8beb2e}
+      \strng{authornamehash}{25f9e1454d12b8ef5ae6779a7b8beb2e}
+      \strng{authorfullhash}{25f9e1454d12b8ef5ae6779a7b8beb2e}
+      \field{sortinit}{1}
+      \field{sortinithash}{2174f786c6195e7fe2ee1c229b416e29}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Github}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{Linux kernel mode debugfs keylogger}
+      \field{year}{2015}
+      \verb{urlraw}
+      \verb https://github.com/jarun/keysniffer
+      \endverb
+      \verb{url}
+      \verb https://github.com/jarun/keysniffer
+      \endverb
+    \endentry
+    \entry{10}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=cdccb14eff5654416cf79062ef76cb08}{%
+           family={enaudon},
+           familyi={e\bibinitperiod}}}%
+      }
+      \strng{namehash}{cdccb14eff5654416cf79062ef76cb08}
+      \strng{fullhash}{cdccb14eff5654416cf79062ef76cb08}
+      \strng{bibnamehash}{cdccb14eff5654416cf79062ef76cb08}
+      \strng{authorbibnamehash}{cdccb14eff5654416cf79062ef76cb08}
+      \strng{authornamehash}{cdccb14eff5654416cf79062ef76cb08}
+      \strng{authorfullhash}{cdccb14eff5654416cf79062ef76cb08}
+      \field{sortinit}{1}
+      \field{sortinithash}{2174f786c6195e7fe2ee1c229b416e29}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{{Github}}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{keylogger}
+      \field{year}{2011}
+      \verb{urlraw}
+      \verb https://github.com/enaudon/keylogger/blob/master/loggers/new_read/new_read.c
+      \endverb
+      \verb{url}
+      \verb https://github.com/enaudon/keylogger/blob/master/loggers/new_read/new_read.c
+      \endverb
+    \endentry
+    \entry{6}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=aa352f823f42538b1b142815bcdad2b7}{%
+           family={Shrimal},
+           familyi={S\bibinitperiod},
+           given={Anubhav},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{aa352f823f42538b1b142815bcdad2b7}
+      \strng{fullhash}{aa352f823f42538b1b142815bcdad2b7}
+      \strng{bibnamehash}{aa352f823f42538b1b142815bcdad2b7}
+      \strng{authorbibnamehash}{aa352f823f42538b1b142815bcdad2b7}
+      \strng{authornamehash}{aa352f823f42538b1b142815bcdad2b7}
+      \strng{authorfullhash}{aa352f823f42538b1b142815bcdad2b7}
+      \field{sortinit}{1}
+      \field{sortinithash}{2174f786c6195e7fe2ee1c229b416e29}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{Adding a Hello World System Call to Linux Kernel}}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb https://medium.com/anubhav-shrimal/adding-a-hello-world-system-call-to-linux-kernel-dad32875872
+      \endverb
+      \verb{url}
+      \verb https://medium.com/anubhav-shrimal/adding-a-hello-world-system-call-to-linux-kernel-dad32875872
+      \endverb
+    \endentry
+    \entry{11}{misc}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{cbff857e587bcb4635511624d773949e}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{{University of South Wales: Cyber University of the Year: 2019}}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{Basics of Making a Rootkit: From syscall to hook!}}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb https://uwnthesis.wordpress.com/2016/12/26/basics-of-making-a-rootkit-from-syscall-to-hook/
+      \endverb
+      \verb{url}
+      \verb https://uwnthesis.wordpress.com/2016/12/26/basics-of-making-a-rootkit-from-syscall-to-hook/
+      \endverb
+    \endentry
+    \entry{12}{misc}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{cbff857e587bcb4635511624d773949e}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{Error when I try to compile the kernel 2.6.37}}
+      \field{year}{2011}
+      \verb{urlraw}
+      \verb https://askubuntu.com/questions/22267/error-when-i-try-to-compile-the-kernel-2-6-37
+      \endverb
+      \verb{url}
+      \verb https://askubuntu.com/questions/22267/error-when-i-try-to-compile-the-kernel-2-6-37
+      \endverb
+    \endentry
+    \entry{13}{misc}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{cbff857e587bcb4635511624d773949e}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{kernel configuration file has not found /boot directory }}
+      \field{year}{2014}
+      \verb{urlraw}
+      \verb https://www.linuxquestions.org/questions/linux-software-2/kernel-configuration-file-has-not-found-boot-directory-4175502940/
+      \endverb
+      \verb{url}
+      \verb https://www.linuxquestions.org/questions/linux-software-2/kernel-configuration-file-has-not-found-boot-directory-4175502940/
+      \endverb
+    \endentry
+    \entry{14}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=a21c54cd5e11878e3bfccc4a8ba85bbd}{%
+           family={Leung},
+           familyi={L\bibinitperiod},
+           given={Vanessa},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{a21c54cd5e11878e3bfccc4a8ba85bbd}
+      \strng{fullhash}{a21c54cd5e11878e3bfccc4a8ba85bbd}
+      \strng{bibnamehash}{a21c54cd5e11878e3bfccc4a8ba85bbd}
+      \strng{authorbibnamehash}{a21c54cd5e11878e3bfccc4a8ba85bbd}
+      \strng{authornamehash}{a21c54cd5e11878e3bfccc4a8ba85bbd}
+      \strng{authorfullhash}{a21c54cd5e11878e3bfccc4a8ba85bbd}
+      \field{sortinit}{2}
+      \field{sortinithash}{cbff857e587bcb4635511624d773949e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Codeburst dot IO}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{How to Call Google Drive API using curl command with C Programming?}}
+      \verb{urlraw}
+      \verb https://codeburst.io/how-to-call-google-drive-api-using-curl-command-with-c-programming-4da30a4c02ea
+      \endverb
+      \verb{url}
+      \verb https://codeburst.io/how-to-call-google-drive-api-using-curl-command-with-c-programming-4da30a4c02ea
+      \endverb
+    \endentry
+    \entry{15}{misc}{}
+      \field{sortinit}{2}
+      \field{sortinithash}{cbff857e587bcb4635511624d773949e}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{{Stack Overflow}}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{Looking for example using MediaFileUpload}}
+      \field{year}{2012}
+      \verb{urlraw}
+      \verb https://stackoverflow.com/questions/11472401/looking-for-example-using-mediafileupload
+      \endverb
+      \verb{url}
+      \verb https://stackoverflow.com/questions/11472401/looking-for-example-using-mediafileupload
+      \endverb
+    \endentry
+    \entry{16}{misc}{}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{{Google Drive API}}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{G Suite and Drive MIME Types}}
+      \verb{urlraw}
+      \verb https://developers.google.com/drive/api/v3/mime-types
+      \endverb
+      \verb{url}
+      \verb https://developers.google.com/drive/api/v3/mime-types
+      \endverb
+    \endentry
+    \entry{17}{misc}{}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{KLDPWiki: Writing Linux Kernel Keylogger}}
+      \field{year}{2004}
+      \verb{urlraw}
+      \verb https://wiki.kldp.org/wiki.php/WritingLinuxKernelKeylogger
+      \endverb
+      \verb{url}
+      \verb https://wiki.kldp.org/wiki.php/WritingLinuxKernelKeylogger
+      \endverb
+    \endentry
+    \entry{18}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=94f71f48590c2b4fcc93238587cd08eb}{%
+           family={Sreehari},
+           familyi={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{94f71f48590c2b4fcc93238587cd08eb}
+      \strng{fullhash}{94f71f48590c2b4fcc93238587cd08eb}
+      \strng{bibnamehash}{94f71f48590c2b4fcc93238587cd08eb}
+      \strng{authorbibnamehash}{94f71f48590c2b4fcc93238587cd08eb}
+      \strng{authornamehash}{94f71f48590c2b4fcc93238587cd08eb}
+      \strng{authorfullhash}{94f71f48590c2b4fcc93238587cd08eb}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{Implementing a system call in Linux Kernel 4.7.1}}
+      \field{year}{2016}
+      \verb{urlraw}
+      \verb https://medium.com/@ssreehari/implementing-a-system-call-in-linux-kernel-4-7-1-6f98250a8c38
+      \endverb
+      \verb{url}
+      \verb https://medium.com/@ssreehari/implementing-a-system-call-in-linux-kernel-4-7-1-6f98250a8c38
+      \endverb
+    \endentry
+    \entry{19}{misc}{}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{{Stack Overflow}}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{Read/write files within a Linux kernel module}
+      \field{year}{2009}
+      \verb{urlraw}
+      \verb https://stackoverflow.com/questions/1184274/read-write-files-within-a-linux-kernel-module
+      \endverb
+      \verb{url}
+      \verb https://stackoverflow.com/questions/1184274/read-write-files-within-a-linux-kernel-module
+      \endverb
+    \endentry
+    \entry{20}{misc}{}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{{Ask Ubuntu}}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{How to hide terminal output when executing a command?}
+      \field{year}{2012}
+      \verb{urlraw}
+      \verb https://askubuntu.com/questions/98377/how-to-hide-terminal-output-when-executing-a-command
+      \endverb
+      \verb{url}
+      \verb https://askubuntu.com/questions/98377/how-to-hide-terminal-output-when-executing-a-command
+      \endverb
+    \endentry
+    \entry{21}{misc}{}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{{Linux Questions}}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{how do I extract the pid field from ps aux command}
+      \field{year}{2005}
+      \verb{urlraw}
+      \verb https://www.linuxquestions.org/questions/linux-newbie-8/how-do-i-extract-the-pid-field-from-ps-aux-command-361150/
+      \endverb
+      \verb{url}
+      \verb https://www.linuxquestions.org/questions/linux-newbie-8/how-do-i-extract-the-pid-field-from-ps-aux-command-361150/
+      \endverb
+    \endentry
+    \entry{22}{misc}{}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{{Stack Overflow}}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{Local (?) variable referenced before assignment [duplicate]}
+      \field{year}{2012}
+      \verb{urlraw}
+      \verb https://stackoverflow.com/questions/11904981/local-variable-referenced-before-assignment
+      \endverb
+      \verb{url}
+      \verb https://stackoverflow.com/questions/11904981/local-variable-referenced-before-assignment
+      \endverb
+    \endentry
+    \entry{23}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=859dbcb5233e685762c0ff94dda04d64}{%
+           family={{Enrico Perla and Massimiliano Oldani}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{859dbcb5233e685762c0ff94dda04d64}
+      \strng{fullhash}{859dbcb5233e685762c0ff94dda04d64}
+      \strng{bibnamehash}{859dbcb5233e685762c0ff94dda04d64}
+      \strng{authorbibnamehash}{859dbcb5233e685762c0ff94dda04d64}
+      \strng{authornamehash}{859dbcb5233e685762c0ff94dda04d64}
+      \strng{authorfullhash}{859dbcb5233e685762c0ff94dda04d64}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{A Guide to Kernel Exploitation: Attacking the Core}}
+      \field{year}{2011}
+    \endentry
+    \entry{25}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=a5938bd90e99768d9dd4c68868e70782}{%
+           family={{David Liedle}},
+           familyi={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{a5938bd90e99768d9dd4c68868e70782}
+      \strng{fullhash}{a5938bd90e99768d9dd4c68868e70782}
+      \strng{bibnamehash}{a5938bd90e99768d9dd4c68868e70782}
+      \strng{authorbibnamehash}{a5938bd90e99768d9dd4c68868e70782}
+      \strng{authornamehash}{a5938bd90e99768d9dd4c68868e70782}
+      \strng{authorfullhash}{a5938bd90e99768d9dd4c68868e70782}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{Upload Files With Python}}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb https://dzone.com/articles/upload-files-with-python
+      \endverb
+      \verb{url}
+      \verb https://dzone.com/articles/upload-files-with-python
+      \endverb
+    \endentry
+    \entry{26}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=607c66bbcc39228f5d88f4e6a92d3cfe}{%
+           family={{Keith Weaver}},
+           familyi={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{607c66bbcc39228f5d88f4e6a92d3cfe}
+      \strng{fullhash}{607c66bbcc39228f5d88f4e6a92d3cfe}
+      \strng{bibnamehash}{607c66bbcc39228f5d88f4e6a92d3cfe}
+      \strng{authorbibnamehash}{607c66bbcc39228f5d88f4e6a92d3cfe}
+      \strng{authornamehash}{607c66bbcc39228f5d88f4e6a92d3cfe}
+      \strng{authorfullhash}{607c66bbcc39228f5d88f4e6a92d3cfe}
+      \field{sortinit}{3}
+      \field{sortinithash}{a4b52e5432884761f50fb9571273b93e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed 2019-12-07}
+      \field{title}{{Python File Upload to Server with 3 lines}}
+      \field{year}{2017}
+      \verb{urlraw}
+      \verb https://medium.com/@Keithweaver_/python-file-upload-to-server-with-3-lines-96294a23d271
+      \endverb
+      \verb{url}
+      \verb https://medium.com/@Keithweaver_/python-file-upload-to-server-with-3-lines-96294a23d271
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

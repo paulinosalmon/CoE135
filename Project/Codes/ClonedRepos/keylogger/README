@@ -1,0 +1,18 @@
+EXAMPLES
+  - proof-of-concept modules
+  - templates
+
+HEADERS
+  - header files with useful methods
+
+UTILS
+  - utility scripts
+  - user-space test programs
+
+LOGGERS
+  - all of the various keyloggers
+  - each has its own sub-directory, which should contain...
+      - source code
+      - Makefile
+      - README
+
